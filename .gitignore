@@ -1,0 +1,46 @@
+# --- System / OS (Сміття операційних систем) ---
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# --- IDE / Editor (Налаштування редакторів) ---
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- Environment Variables (Секрети!) ---
+# Ніколи не заливайте паролі та токени на GitHub
+.env
+.env.*
+!.env.example
+
+# --- Python Backend ---
+backend/__pycache__/
+backend/*.py[cod]
+backend/venv/
+backend/.venv/
+backend/env/
+backend/.pytest_cache/
+backend/htmlcov/
+backend/coverage.xml
+
+# --- Node.js Frontend ---
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/.eslintcache
+
+# --- Docker ---
+# Ігноруємо локальні дані бази, якщо вони в папці проєкту
+postgres_data/
+pg_data/
+
+# --- User Uploads (Файли користувачів) ---
+# Ми хочемо мати папку uploads, але не хочемо заливати чужі ДЗ на GitHub
+backend/uploads/*
+!backend/uploads/.gitkeep

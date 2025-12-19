@@ -1,35 +1,30 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import axios from 'axios';
 
-// Базовий URL нашого API
-const API_URL = 'http://localhost:8000';
+import './Calendar.css';
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 export default function Calendar() {
   const [events, setEvents] = useState([]);
 
-  // Ця функція викликається автоматично, коли календар змінює дати (наприклад, перемикаєте місяць)
   const fetchLessons = async (info) => {
     try {
-      // Запит до Python: Дай уроки від [дата_початку] до [дата_кінця]
       const response = await axios.get(`${API_URL}/lessons/`, {
-        params: { 
-          start: info.startStr, 
-          end: info.endStr 
-        }
+        params: { start: info.startStr, end: info.endStr }
       });
       
-      // Перетворюємо дані у формат, зрозумілий календарю
       const calendarEvents = response.data.map(lesson => ({
         id: lesson.id,
         title: lesson.topic || 'Заняття',
         start: lesson.start_time,
         end: lesson.end_time,
-        backgroundColor: lesson.status === 'planned' ? '#3B82F6' : '#10B981', // Синій або Зелений
-        borderColor: 'transparent'
+        // Використовуємо кольори з макета (Синій, Зелений, Сірий)
+        backgroundColor: lesson.status === 'planned' ? '#4F46E5' : (lesson.status === 'completed' ? '#10B981' : '#6B7280'),
       }));
 
       setEvents(calendarEvents);
@@ -39,31 +34,35 @@ export default function Calendar() {
   };
 
   return (
-    <div className="h-[800px] bg-white p-4 rounded shadow">
+    <div className="bg-white h-full">
       <FullCalendar
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-        initialView="timeGridWeek" // Починаємо з тижневого виду
+        initialView="timeGridWeek"
         
-        // Налаштування шапки
+        // Налаштування шапки як на макеті (мінімалістичне)
         headerToolbar={{
           left: 'prev,next today',
           center: 'title',
-          right: 'dayGridMonth,timeGridWeek'
+          right: 'timeGridWeek' // Прибрали зайві кнопки
         }}
+
+        // ВАЖЛИВО: Формат заголовків днів (MON 15, TUE 16)
+        dayHeaderFormat={{ weekday: 'short', day: 'numeric', omitCommas: true }}
+
+        firstDay={1}
+        locale="uk" // Можна змінити на 'en' якщо хочете англійські назви днів (MON, TUE)
+        slotMinTime="08:00:00"
+        slotMaxTime="23:00:00"
+        allDaySlot={false}
+        nowIndicator={true} // Червона лінія поточного часу
         
-        // Локалізація та час
-        firstDay={1} // Тиждень з понеділка
-        locale="uk"  // Мова (якщо FullCalendar підтягне)
-        slotMinTime="08:00:00" // Початок дня
-        slotMaxTime="22:00:00" // Кінець дня
-        allDaySlot={false} // Прибрати рядок "весь день"
-        
-        // Дані
         events={events}
-        datesSet={fetchLessons} // Завантажувати нові дані при перемиканні
-        
-        // Інтерактивність (поки тільки перегляд)
-        editable={true} 
+        datesSet={fetchLessons}
+        editable={true}
+        height="auto"
+        contentHeight="auto"
+        expandRows={true}
+        stickyHeaderDates={true}
       />
     </div>
   );

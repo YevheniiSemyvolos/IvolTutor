@@ -1,0 +1,71 @@
+/* frontend/src/components/Calendar.css */
+
+/* --- Загальний контейнер --- */
+.fc {
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+    --fc-border-color: #E5E7EB; /* Світло-сірі лінії сітки */
+    --fc-today-bg-color: transparent; /* Прибираємо жовтий фон "сьогодні" */
+    --fc-now-indicator-color: #EF4444; /* Червона лінія поточного часу */
+}
+
+/* --- Шапка (Дні тижня) --- */
+.fc-col-header-cell-cushion {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    color: #6B7280; /* Сірий колір тексту заголовків */
+    text-transform: uppercase;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+/* --- Сітка часу --- */
+.fc-timegrid-slot {
+    height: 3em !important; /* Зробити слоти трохи вищими */
+    border-bottom: 1px solid #F3F4F6 !important; /* Дуже світлі горизонтальні лінії */
+}
+
+.fc-timegrid-axis-cushion,
+.fc-timegrid-slot-label-cushion {
+    color: #9CA3AF; /* Світло-сірий колір часу зліва (08:00, 09:00) */
+    font-size: 0.8rem;
+}
+
+/* --- Події (Самі уроки) --- */
+.fc-event {
+    border: none !important; /* Прибираємо стандартну рамку */
+    border-radius: 8px !important; /* Заокруглені кути як на макеті */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Легка тінь */
+    padding: 2px;
+}
+
+/* Внутрішній контент події */
+.fc-event-main {
+    color: white; /* Білий текст */
+    padding: 4px 6px;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+/* --- Навігація зверху (Toolbar) --- */
+.fc-toolbar-title {
+    font-size: 1.5rem !important;
+    font-weight: 700;
+    color: #1F2937;
+}
+
+.fc-button-primary {
+    background-color: white !important;
+    border-color: #E5E7EB !important;
+    color: #374151 !important;
+    box-shadow: none !important;
+    text-transform: capitalize;
+}
+
+.fc-button-primary:hover {
+    background-color: #F9FAFB !important;
+}
+
+.fc-button-active {
+    background-color: #F3F4F6 !important;
+    color: #111827 !important;
+}

@@ -118,7 +118,7 @@ export default function Calendar() {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-900 h-full relative transition-colors duration-300 flex flex-col">
+    <div className="bg-white dark:bg-gray-900 h-full relative transition-colors duration-300 flex flex-col pt-6">
       
       {/* Блок з помилкою */}
       {errorMsg && (
@@ -127,40 +127,38 @@ export default function Calendar() {
         </div>
       )}
 
-      <div className="flex-grow">
-        <FullCalendar
-          ref={calendarRef}
-          plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-          initialView="timeGridWeek"
-          headerToolbar={{
-            left: 'prev,next today',
-            center: 'title',
-            right: 'dayGridMonth,timeGridWeek,timeGridDay'
-          }}
-          
-          // Локалізація та формат
-          locale="uk"
-          firstDay={1}
-          dayHeaderFormat={{ weekday: 'short', day: 'numeric', omitCommas: true }}
-          slotMinTime="08:00:00"
-          slotMaxTime="23:00:00"
-          allDaySlot={false}
-          nowIndicator={true}
-          
-          // Прив'язка даних (Найважливіша частина)
-          events={fetchEventsSource} 
-          
-          // Взаємодія
-          selectable={true}
-          selectMirror={true}
-          select={handleDateSelect}
-          editable={true} // Дозволяє перетягувати (потрібна реалізація eventDrop)
-          
-          // UI макет
-          expandRows={true}
-          stickyHeaderDates={true}
-        />
-      </div>
+      <FullCalendar
+        ref={calendarRef}
+        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+        initialView="timeGridWeek"
+        headerToolbar={{
+          left: 'prev,next today',
+          center: 'title',
+          right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        }}
+        
+        // Локалізація та формат
+        locale="uk"
+        firstDay={1}
+        dayHeaderFormat={{ weekday: 'short', day: 'numeric', omitCommas: true }}
+        slotMinTime="08:00:00"
+        slotMaxTime="23:00:00"
+        allDaySlot={false}
+        nowIndicator={true}
+        
+        // Прив'язка даних (Найважливіша частина)
+        events={fetchEventsSource} 
+        
+        // Взаємодія
+        selectable={true}
+        selectMirror={true}
+        select={handleDateSelect}
+        editable={true} // Дозволяє перетягувати (потрібна реалізація eventDrop)
+        
+        // UI макет
+        expandRows={true}
+        stickyHeaderDates={true}
+      />
 
       <LessonModal 
         isOpen={isModalOpen}

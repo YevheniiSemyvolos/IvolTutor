@@ -6,7 +6,7 @@ function App() {
   return (
     <div className="min-h-screen w-full max-w-full overflow-x-hidden transition-colors duration-300">
       <Navbar />
-      <main style={{ paddingTop: 'var(--navbar-height)' }} className="min-h-screen w-full max-w-full overflow-x-hidden">
+      <main style={{ paddingTop: 'calc(var(--navbar-height) + 12px)' }} className="min-h-screen w-full max-w-full overflow-x-hidden">
         <Calendar />
       </main>
     </div>

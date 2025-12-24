@@ -1,68 +1,78 @@
+/* 1. Підключаємо Tailwind (обов'язково на початку) */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 2. Налаштування змінних для кольорів (щоб Календар міг змінювати колір) */
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  /* Світла тема (за замовчуванням) */
+  --cal-bg: #ffffff;
+  --cal-text: #1f2937;       /* Gray-900 */
+  --cal-border: #e5e7eb;     /* Gray-200 */
+  --cal-slot-line: #f3f4f6;  /* Gray-100 */
+  --cal-time-text: #9ca3af;  /* Gray-400 */
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+/* Темна тема (вмикається класом .dark) */
+.dark {
+  --cal-bg: #111827;         /* Gray-900 */
+  --cal-text: #f3f4f6;       /* Gray-100 */
+  --cal-border: #374151;     /* Gray-700 */
+  --cal-slot-line: #1f2937;  /* Gray-800 */
+  --cal-time-text: #9ca3af;  /* Gray-400 */
 }
 
+/* 3. Базові налаштування сторінки */
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  /* Плавна зміна кольору фону при перемиканні теми */
+  transition: background-color 0.3s, color 0.3s;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+/* 4. Застосовуємо змінні до Календаря */
+/* Це дозволяє нам змінювати кольори FullCalendar через CSS змінні */
+.fc {
+  --fc-border-color: var(--cal-border);
+  --fc-page-bg-color: var(--cal-bg);
+  --fc-neutral-bg-color: var(--cal-bg);
+  
+  background-color: var(--cal-bg);
+  color: var(--cal-text);
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+/* Колір заголовків (ПН, ВТ...) */
+.fc-col-header-cell-cushion {
+  color: var(--cal-time-text);
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+/* Лінії сітки */
+.fc-timegrid-slot {
+  border-bottom: 1px solid var(--cal-slot-line) !important;
+}
+
+/* Години зліва (08:00, 09:00) */
+.fc-timegrid-axis-cushion,
+.fc-timegrid-slot-label-cushion {
+  color: var(--cal-time-text);
+}
+
+/* Заголовок календаря */
+.fc-toolbar-title {
+  color: var(--cal-text) !important;
+}
+
+/* Кнопки календаря в темній темі (перевизначення стилів) */
+.dark .fc-button-primary {
+  background-color: #1f2937 !important;
+  border-color: #374151 !important;
+  color: #e5e7eb !important;
+}
+.dark .fc-button-primary:hover {
+  background-color: #374151 !important;
+}
+.dark .fc-button-active {
+  background-color: #374151 !important;
+  color: white !important;
 }

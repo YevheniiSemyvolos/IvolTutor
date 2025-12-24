@@ -1,74 +1,104 @@
 // frontend/src/components/Calendar.jsx
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import axios from 'axios';
-
-// Імпортуємо наше нове модальне вікно
 import LessonModal from './LessonModal';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
+// Конфігурація кольорів подій
+const EVENT_COLORS = {
+  planned: '#4F46E5',   // Індиго (заплановано)
+  completed: '#10B981', // Смарагдовий (проведено)
+  cancelled: '#EF4444', // Червоний (скасовано)
+  default: '#6B7280'    // Сірий (інше)
+};
+
 export default function Calendar() {
-  const [events, setEvents] = useState([]);
-  const [students, setStudents] = useState([]); // Список студентів для форми
-  
-  // Стани для модального вікна
+  const [students, setStudents] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedRange, setSelectedRange] = useState(null); // Час, який ми виділили мишкою
-  
-  // Ref для доступу до FullCalendar API
+  const [selectedRange, setSelectedRange] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null); // Для показу помилок в UI
+
   const calendarRef = useRef(null);
 
-  // 1. Завантажуємо студентів при запуску (щоб було кого вибирати)
+  // 1. Завантаження студентів
   useEffect(() => {
+    const controller = new AbortController();
+
     const fetchStudents = async () => {
       try {
-        const res = await axios.get(`${API_URL}/students/`);
+        const res = await axios.get(`${API_URL}/students/`, {
+          signal: controller.signal
+        });
         setStudents(res.data);
       } catch (e) {
-        console.error("Не вдалося завантажити студентів");
+        if (!axios.isCancel(e)) {
+          console.error("Не вдалося завантажити студентів", e);
+          setErrorMsg("Не вдалося завантажити список студентів.");
+        }
       }
     };
+
     fetchStudents();
+
+    return () => controller.abort();
   }, []);
 
-  const fetchLessons = async (info) => {
+  // 2. Функція-джерело подій для FullCalendar
+  // FullCalendar викликає її автоматично при зміні дат/вигляду
+  const fetchEventsSource = useCallback(async (fetchInfo, successCallback, failureCallback) => {
     try {
       const response = await axios.get(`${API_URL}/lessons/`, {
-        params: { start: info.startStr, end: info.endStr }
+        params: { 
+          start: fetchInfo.startStr, 
+          end: fetchInfo.endStr 
+        }
       });
-      
-      const calendarEvents = response.data.map(lesson => ({
+
+      const formattedEvents = response.data.map(lesson => ({
         id: lesson.id,
         title: lesson.topic || 'Заняття',
         start: lesson.start_time,
         end: lesson.end_time,
-        backgroundColor: lesson.status === 'planned' ? '#4F46E5' : (lesson.status === 'completed' ? '#10B981' : '#6B7280'),
+        backgroundColor: EVENT_COLORS[lesson.status] || EVENT_COLORS.default,
+        extendedProps: { ...lesson } // Зберігаємо оригінальні дані, якщо знадобляться при кліку
       }));
 
-      setEvents(calendarEvents);
+      successCallback(formattedEvents);
+      setErrorMsg(null); // Очищаємо помилки при успіху
     } catch (error) {
       console.error("Помилка завантаження уроків:", error);
+      failureCallback(error);
+      setErrorMsg("Помилка завантаження розкладу.");
     }
-  };
+  }, []);
 
-  // 2. Коли користувач виділив час мишкою
+  // 3. Обробка виділення часу мишкою
   const handleDateSelect = (selectInfo) => {
-    setSelectedRange(selectInfo); // Запам'ятовуємо час (start, end)
-    setIsModalOpen(true);         // Відкриваємо вікно
+    setSelectedRange(selectInfo);
+    setIsModalOpen(true);
   };
 
-  // 3. Коли натиснули "Зберегти" у модальному вікні
+  // 4. Закриття модального вікна (скидання виділення)
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    // Знімаємо візуальне виділення в календарі, якщо скасували створення
+    const calendarApi = calendarRef.current?.getApi();
+    if (calendarApi) calendarApi.unselect();
+  };
+
+  // 5. Створення уроку
   const handleCreateLesson = async ({ student_id, topic }) => {
     if (!student_id) return;
 
     const newLesson = {
-      student_id: student_id,
-      topic: topic,
-      price: 0, // Поки ставимо 0, пізніше зробимо авто-ціну
+      student_id,
+      topic,
+      price: 0, 
       start_time: selectedRange.startStr,
       end_time: selectedRange.endStr,
       status: 'planned'
@@ -77,54 +107,64 @@ export default function Calendar() {
     try {
       await axios.post(`${API_URL}/lessons/`, newLesson);
       
-      // Закриваємо вікно
-      setIsModalOpen(false);
-      // Оновлюємо події на календарі
-      if (calendarRef.current) {
-        calendarRef.current.getApi().refetchEvents();
-      }
+      handleCloseModal();
+      
+      // Оновлюємо події, щоб новий урок з'явився миттєво
+      calendarRef.current?.getApi().refetchEvents(); 
     } catch (error) {
-      alert("Помилка створення уроку");
       console.error(error);
+      alert("Помилка створення уроку"); // В ідеалі краще замінити на Toast/Notification
     }
   };
 
   return (
-    <div className="bg-white dark:bg-gray-900 h-full relative transition-colors duration-300">
-      <FullCalendar
-        ref={calendarRef}
-        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-        initialView="timeGridWeek"
-        headerToolbar={{
-          left: 'prev,next today',
-          center: 'title',
-          right: 'timeGridWeek'
-        }}
-        dayHeaderFormat={{ weekday: 'short', day: 'numeric', omitCommas: true }}
-        firstDay={1}
-        locale="uk"
-        slotMinTime="08:00:00"
-        slotMaxTime="23:00:00"
-        allDaySlot={false}
-        nowIndicator={true}
-        events={events}
-        datesSet={fetchLessons}
-        editable={true}
-        height="auto"
-        contentHeight="auto"
-        expandRows={true}
-        stickyHeaderDates={true}
-        
-        // --- ВАЖЛИВО: Додаємо можливість виділення ---
-        selectable={true}       // Дозволити виділяти час мишкою
-        selectMirror={true}     // Показувати "привид" події під час тягнення
-        select={handleDateSelect} // Яку функцію запускати при виділенні
-      />
+    <div className="bg-white dark:bg-gray-900 h-full relative transition-colors duration-300 flex flex-col">
+      
+      {/* Блок з помилкою */}
+      {errorMsg && (
+        <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4" role="alert">
+          <p>{errorMsg}</p>
+        </div>
+      )}
 
-      {/* Саме Модальне вікно */}
+      <div className="flex-grow">
+        <FullCalendar
+          ref={calendarRef}
+          plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+          initialView="timeGridWeek"
+          headerToolbar={{
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay'
+          }}
+          
+          // Локалізація та формат
+          locale="uk"
+          firstDay={1}
+          dayHeaderFormat={{ weekday: 'short', day: 'numeric', omitCommas: true }}
+          slotMinTime="08:00:00"
+          slotMaxTime="23:00:00"
+          allDaySlot={false}
+          nowIndicator={true}
+          
+          // Прив'язка даних (Найважливіша частина)
+          events={fetchEventsSource} 
+          
+          // Взаємодія
+          selectable={true}
+          selectMirror={true}
+          select={handleDateSelect}
+          editable={true} // Дозволяє перетягувати (потрібна реалізація eventDrop)
+          
+          // UI макет
+          expandRows={true}
+          stickyHeaderDates={true}
+        />
+      </div>
+
       <LessonModal 
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={handleCloseModal}
         onSubmit={handleCreateLesson}
         students={students}
       />

@@ -1,4 +1,3 @@
-// frontend/src/App.jsx
 import Calendar from './components/Calendar';
 import Navbar from './components/Navbar';
 

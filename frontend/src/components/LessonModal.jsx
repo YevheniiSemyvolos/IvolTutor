@@ -1,4 +1,3 @@
-// frontend/src/components/LessonModal.jsx
 import React, { useState, useEffect } from 'react';
 import './LessonModal.css'; // Стилі залишаються тими ж
 

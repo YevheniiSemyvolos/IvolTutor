@@ -1,4 +1,3 @@
-// frontend/src/components/ThemeToggle.jsx
 import React, { useState } from 'react';
 import useTheme from '../hooks/useTheme';
 import './ThemeToggle.css';
@@ -38,14 +37,6 @@ export default function ThemeToggle() {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
         </svg>
       </button>
-
-      {/* 2. Прозорий фон-перехоплювач */}
-      {isOpen && (
-        <div 
-          className="theme-toggle-backdrop" 
-          onClick={() => setIsOpen(false)}
-        />
-      )}
 
       {/* 3. Випадаюче меню */}
       {isOpen && (

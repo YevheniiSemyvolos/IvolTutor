@@ -4,61 +4,53 @@
   z-index: 1001;
 }
 
-/* Main Button */
+/* --- Main Button --- */
 .theme-toggle-button {
   display: flex;
   align-items: center;
   gap: 0.625rem;
   padding: 0.625rem 1rem;
-  background: linear-gradient(135deg, rgba(249, 250, 251, 0.9) 0%, rgba(243, 244, 246, 0.9) 100%);
+
+  background-color: rgba(255, 255, 255, 0.9);
+  
   border: 1.5px solid rgba(229, 231, 235, 0.6);
   border-radius: 0.75rem;
   font-size: 0.875rem;
   font-weight: 600;
   color: #374151;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-}
 
-.theme-toggle-button::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(147, 51, 234, 0.1) 100%);
-  opacity: 0;
-  transition: opacity 0.3s ease;
+  /* Важливо: додаємо background-color до transition */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .theme-toggle-button:hover {
+  background-color: rgba(243, 244, 246, 1);
   border-color: rgba(59, 130, 246, 0.5);
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(147, 51, 234, 0.08) 100%);
   transform: translateY(-1px);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-}
-
-.theme-toggle-button:hover::before {
-  opacity: 1;
 }
 
 .theme-toggle-button:active {
   transform: translateY(0);
 }
 
+/* Темна тема для кнопки */
 .dark .theme-toggle-button {
-  background: linear-gradient(135deg, rgba(31, 41, 55, 0.9) 0%, rgba(17, 24, 39, 0.9) 100%);
+  background-color: rgba(31, 41, 55, 0.9); /* Темно-сірий напівпрозорий */
   border-color: rgba(75, 85, 99, 0.6);
   color: #e5e7eb;
 }
 
 .dark .theme-toggle-button:hover {
+  background-color: rgba(55, 65, 81, 1); /* Світліший темно-сірий */
   border-color: rgba(96, 165, 250, 0.5);
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(147, 51, 234, 0.15) 100%);
 }
 
-/* Icon */
+/* --- Icon --- */
 .theme-toggle-icon {
   font-size: 1.125rem;
   line-height: 1;
@@ -74,7 +66,7 @@
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
 }
 
-/* Label */
+/* --- Label --- */
 .theme-toggle-label {
   position: relative;
   z-index: 1;
@@ -82,7 +74,7 @@
   letter-spacing: -0.01em;
 }
 
-/* Arrow Icon */
+/* --- Arrow Icon --- */
 .theme-toggle-arrow {
   width: 1rem;
   height: 1rem;
@@ -95,51 +87,53 @@
   transform: rotate(180deg);
 }
 
-/* Backdrop */
+/* --- Backdrop --- */
 .theme-toggle-backdrop {
   position: fixed;
   inset: 0;
   z-index: 999;
-  background: rgba(0, 0, 0, 0.1);
+  background-color: rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);
   animation: fadeIn 0.2s ease;
+  transition: background-color 0.3s ease;
 }
 
 .dark .theme-toggle-backdrop {
-  background: rgba(0, 0, 0, 0.3);
+  background-color: rgba(0, 0, 0, 0.4);
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-/* Dropdown Menu */
+/* --- Dropdown Menu --- */
 .theme-toggle-dropdown {
   position: absolute;
   right: 0;
   top: calc(100% + 0.5rem);
   width: 11rem;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(249, 250, 251, 0.98) 100%);
+  
+  background-color: rgba(255, 255, 255, 0.95);
+  
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  
   border: 1.5px solid rgba(229, 231, 235, 0.8);
   border-radius: 0.875rem;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
   z-index: 1001;
   overflow: hidden;
   animation: slideDown 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .dark .theme-toggle-dropdown {
-  background: linear-gradient(135deg, rgba(31, 41, 55, 0.98) 0%, rgba(17, 24, 39, 0.98) 100%);
+  background-color: rgba(31, 41, 55, 0.95);
   border-color: rgba(75, 85, 99, 0.8);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
 }
 
 @keyframes slideDown {
@@ -160,11 +154,11 @@
   list-style: none;
 }
 
-/* Menu Item */
 .theme-toggle-menu-item {
   margin: 0;
 }
 
+/* --- Menu Button Item --- */
 .theme-toggle-menu-button {
   width: 100%;
   text-align: left;
@@ -174,31 +168,19 @@
   align-items: center;
   gap: 0.75rem;
   background: transparent;
-  border: none;
+  border: 1px solid transparent; /* Резервуємо місце під бордер */
   border-radius: 0.625rem;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   color: #374151;
   position: relative;
   overflow: hidden;
-}
-
-.theme-toggle-menu-button::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(147, 51, 234, 0.1) 100%);
-  opacity: 0;
-  transition: opacity 0.2s ease;
+  
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .theme-toggle-menu-button:hover {
-  background: rgba(243, 244, 246, 0.8);
+  background-color: rgba(243, 244, 246, 0.8);
   transform: translateX(2px);
-}
-
-.theme-toggle-menu-button:hover::before {
-  opacity: 1;
 }
 
 .dark .theme-toggle-menu-button {
@@ -206,28 +188,24 @@
 }
 
 .dark .theme-toggle-menu-button:hover {
-  background: rgba(55, 65, 81, 0.6);
+  background-color: rgba(55, 65, 81, 0.6);
 }
 
-/* Active Menu Item */
+/* --- Active Menu Item --- */
 .theme-toggle-menu-button.active {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(147, 51, 234, 0.15) 100%);
+  background-color: rgba(59, 130, 246, 0.1);
   color: #2563eb;
   font-weight: 600;
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-color: rgba(59, 130, 246, 0.3);
 }
 
 .dark .theme-toggle-menu-button.active {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.25) 0%, rgba(147, 51, 234, 0.25) 100%);
+  background-color: rgba(59, 130, 246, 0.2);
   color: #60a5fa;
   border-color: rgba(96, 165, 250, 0.4);
 }
 
-.theme-toggle-menu-button.active::before {
-  opacity: 1;
-}
-
-/* Menu Icon */
+/* Menu Icon inside Item */
 .theme-toggle-menu-icon {
   font-size: 1.125rem;
   line-height: 1;
@@ -243,14 +221,12 @@
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
 }
 
-/* Menu Label */
+/* Label inside Item */
 .theme-toggle-menu-label {
-  position: relative;
-  z-index: 1;
   flex: 1;
 }
 
-/* Checkmark for active item */
+/* Checkmark */
 .theme-toggle-menu-button.active::after {
   content: '✓';
   position: absolute;
@@ -258,7 +234,6 @@
   font-size: 0.875rem;
   font-weight: 700;
   color: #2563eb;
-  z-index: 1;
 }
 
 .dark .theme-toggle-menu-button.active::after {

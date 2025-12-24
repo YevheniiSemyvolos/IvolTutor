@@ -1,32 +1,28 @@
 /* frontend/src/components/LessonModal.css */
 
-/* Темна підкладка на весь екран */
 .modal-overlay {
-    position: fixed; /* Фіксуємо відносно вікна браузера */
+    position: fixed;
     top: 0;
     left: 0;
-    width: 100vw; /* На всю ширину */
-    height: 100vh; /* На всю висоту */
-    background-color: rgba(0, 0, 0, 0.5); /* Напівпрозорий чорний */
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
     display: flex;
-    justify-content: center; /* Центруємо по горизонталі */
-    align-items: center; /* Центруємо по вертикалі */
-    z-index: 10000; /* Дуже велике число, щоб бути поверх календаря */
-}   
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+}
 
-/* Сама біла коробочка */
 .modal-content {
     background-color: white;
     padding: 24px;
     border-radius: 12px;
     box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-    width: 400px; /* Фіксована ширина */
-    max-width: 90%; /* Щоб не вилазило на мобільних */
+    width: 400px;
+    max-width: 90%;
     position: relative;
-    z-index: 10000;
 }
 
-/* Стилі для форми (щоб було гарно навіть без Tailwind) */
 .form-group {
     margin-bottom: 16px;
 }
@@ -46,7 +42,7 @@
     border-radius: 6px;
     font-size: 1rem;
     outline: none;
-    box-sizing: border-box; /* Важливо, щоб padding не ламав ширину */
+    box-sizing: border-box;
 }
 
 .form-input:focus, .form-select:focus {

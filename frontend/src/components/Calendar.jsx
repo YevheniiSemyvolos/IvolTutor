@@ -1,11 +1,10 @@
 // frontend/src/components/Calendar.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import axios from 'axios';
-import './Calendar.css';
 
 // Імпортуємо наше нове модальне вікно
 import LessonModal from './LessonModal';
@@ -19,6 +18,9 @@ export default function Calendar() {
   // Стани для модального вікна
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRange, setSelectedRange] = useState(null); // Час, який ми виділили мишкою
+  
+  // Ref для доступу до FullCalendar API
+  const calendarRef = useRef(null);
 
   // 1. Завантажуємо студентів при запуску (щоб було кого вибирати)
   useEffect(() => {
@@ -77,8 +79,10 @@ export default function Calendar() {
       
       // Закриваємо вікно
       setIsModalOpen(false);
-      // Очищаємо виділення на календарі
-      selectedRange.view.calendar.refetchEvents(); 
+      // Оновлюємо події на календарі
+      if (calendarRef.current) {
+        calendarRef.current.getApi().refetchEvents();
+      }
     } catch (error) {
       alert("Помилка створення уроку");
       console.error(error);
@@ -88,6 +92,7 @@ export default function Calendar() {
   return (
     <div className="bg-white dark:bg-gray-900 h-full relative transition-colors duration-300">
       <FullCalendar
+        ref={calendarRef}
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         initialView="timeGridWeek"
         headerToolbar={{

@@ -1,19 +1,11 @@
 import Calendar from './components/Calendar';
-import ThemeToggle from './components/ThemeToggle';
+import Navbar from './components/Navbar';
 
 function App() {
   return (
-    <div className="min-h-screen bg-white text-gray-900 dark:bg-gray-900 dark:text-white transition-colors duration-300">
-      
-      {/* Шапка з перемикачем */}
-      <header className="p-4 border-b dark:border-gray-700 flex justify-between items-center">
-        <h1 className="text-xl font-bold text-blue-600 dark:text-blue-400">
-          Tutor CRM
-        </h1>
-        <ThemeToggle />
-      </header>
-
-      <main className="h-[calc(100vh-80px)]">
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-white text-gray-900 dark:bg-gray-900 dark:text-white transition-colors duration-300">
+      <Navbar />
+      <main style={{ paddingTop: 'var(--navbar-height)' }} className="min-h-screen w-full max-w-full overflow-x-hidden">
         <Calendar />
       </main>
     </div>

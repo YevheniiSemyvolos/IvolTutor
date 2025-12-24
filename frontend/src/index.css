@@ -11,6 +11,15 @@
   --cal-border: #e5e7eb;     /* Gray-200 */
   --cal-slot-line: #f3f4f6;  /* Gray-100 */
   --cal-time-text: #9ca3af;  /* Gray-400 */
+  /* Висота navbar */
+  --navbar-height: 73px;
+}
+
+/* Адаптивна висота navbar для мобільних */
+@media (max-width: 640px) {
+  :root {
+    --navbar-height: 65px;
+  }
 }
 
 /* Темна тема (вмикається класом .dark) */
@@ -23,12 +32,26 @@
 }
 
 /* 3. Базові налаштування сторінки */
+html {
+  overflow-x: hidden;
+  width: 100%;
+}
+
 body {
   margin: 0;
+  padding: 0;
   min-width: 320px;
   min-height: 100vh;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
   /* Плавна зміна кольору фону при перемиканні теми */
   transition: background-color 0.3s, color 0.3s;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
 }
 
 /* 4. Застосовуємо змінні до Календаря */
@@ -40,6 +63,8 @@ body {
   
   background-color: var(--cal-bg);
   color: var(--cal-text);
+  position: relative;
+  z-index: 1; /* Календар має бути нижче за Navbar */
 }
 
 /* Колір заголовків (ПН, ВТ...) */

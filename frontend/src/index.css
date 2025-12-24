@@ -2,11 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-/* --- 1. Змінні та Теми --- */
 :root {
-  /* Розміри */
   --navbar-height: 73px;
-
+  
   /* Кольори (Світла тема) */
   --cal-bg: #ffffff;
   --cal-text: #1f2937;       /* gray-900 */
@@ -15,7 +13,6 @@
   --cal-time-text: #9ca3af;  /* gray-400 */
 }
 
-/* Адаптивність для мобільних */
 @media (max-width: 640px) {
   :root {
     --navbar-height: 65px;
@@ -28,9 +25,9 @@
   --cal-text: #f3f4f6;       /* gray-100 */
   --cal-border: #374151;     /* gray-700 */
   --cal-slot-line: #1f2937;  /* gray-800 */
+  --cal-time-text: #9ca3af;  /* gray-400 */
 }
 
-/* --- 2. Глобальні налаштування --- */
 html {
   overflow-x: hidden;
   width: 100%;
@@ -45,68 +42,56 @@ body {
   max-width: 100%;
   overflow-x: hidden;
   
-  background-color: var(--cal-bg); /* Фон береться зі змінної календаря */
-  color: var(--cal-text);          /* Колір тексту теж */
+  /* Фон сторінки синхронізований з календарем */
+  background-color: var(--cal-bg);
+  color: var(--cal-text);
   
-  /* Плавний перехід для всього тіла сторінки */
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 *, *::before, *::after {
   box-sizing: border-box;
-  /* Додаємо плавність зміни кольорів для всіх елементів */
+  /* Плавна зміна кольорів для всіх елементів */
   transition-property: background-color, border-color, color, fill, stroke;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 300ms;
 }
 
-/* --- 3. Стилізація FullCalendar --- */
+/* --- Стилізація FullCalendar --- */
 .fc {
-  /* Перевизначаємо внутрішні змінні FullCalendar нашими */
+  --fc-border-color: var(--cal-border);
   --fc-page-bg-color: var(--cal-bg);
   --fc-neutral-bg-color: var(--cal-bg);
-  --fc-border-color: var(--cal-border);
   
-  /* Основні кольори */
   background-color: var(--cal-bg);
   color: var(--cal-text);
-  
-  /* Позиціонування */
   position: relative;
-  z-index: 1; 
+  z-index: 1;
 }
 
-/* Сірі кольори для часу та заголовків (групування селекторів) */
-.fc-col-header-cell-cushion,
-.fc-timegrid-axis-cushion,
-.fc-timegrid-slot-label-cushion {
-  color: var(--cal-time-text) !important;
-  text-decoration: none !important; /* Прибираємо підкреслення дат */
+.fc-col-header-cell-cushion { color: var(--cal-time-text); }
+.fc-timegrid-slot { border-bottom: 1px solid var(--cal-slot-line) !important; }
+.fc-timegrid-axis-cushion, .fc-timegrid-slot-label-cushion { color: var(--cal-time-text); }
+.fc-toolbar-title { color: var(--cal-text) !important; }
+
+/*Стилізація */
+.fc .fc-button-primary {
+  background-color: var(--cal-bg) !important;       /* Білий у світлій, Темний у темній */
+  border-color: var(--cal-border) !important;       /* Сіра рамка */
+  color: var(--cal-text) !important;                /* Темний текст у світлій, Світлий у темній */
+  box-shadow: none !important;                      /* Прибираємо стандартні тіні */
 }
 
-/* Заголовок календаря (Місяць/Рік) */
-.fc-toolbar-title {
+/* Стан при наведенні та активний (натиснутий) */
+.fc .fc-button-primary:hover,
+.fc .fc-button-primary:active,
+.fc .fc-button-active {
+  background-color: var(--cal-slot-line) !important; /* Трохи темніший фон (сірий) при наведенні */
+  border-color: var(--cal-border) !important;
   color: var(--cal-text) !important;
 }
 
-/* Лінії сітки */
-.fc-timegrid-slot {
-  border-bottom: 1px solid var(--cal-slot-line) !important;
-}
-
-/* --- 4. Кнопки календаря (Темна тема) --- */
-.dark .fc-button-primary {
-  background-color: #1f2937 !important;
-  border-color: #374151 !important;
-  color: #e5e7eb !important;
-}
-
-.dark .fc-button-primary:hover,
-.dark .fc-button-active {
-  background-color: #374151 !important;
-  border-color: #4b5563 !important;
-}
-
-.dark .fc-button-active {
-  color: #ffffff !important;
+/* Вимикаємо синю обводку при фокусі */
+.fc .fc-button-primary:focus {
+  box-shadow: 0 0 0 2px var(--cal-border) !important;
 }

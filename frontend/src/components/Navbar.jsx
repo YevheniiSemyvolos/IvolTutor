@@ -58,9 +58,18 @@ export default function Navbar() {
             <div className="menu-item">
               <span className="menu-icon">⚙️</span> Налаштування
             </div>
-            <div className="menu-item">
+
+            {/* Посилання на Допомогу (відкриває нову вкладку) */}
+            <a 
+              href="/help.html" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="menu-item"
+              style={{ textDecoration: 'none', color: 'inherit' }}
+            >
               <span className="menu-icon">❓</span> Допомога
-            </div>
+            </a>
+
           </div>
 
         </nav>

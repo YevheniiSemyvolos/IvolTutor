@@ -1,5 +1,5 @@
-import Calendar from './components/Calendar';
-import Navbar from './components/Navbar';
+import Calendar from './components/Calendar/Calendar';
+import Navbar from './components/Navbar/Navbar';
 
 function App() {
   return (

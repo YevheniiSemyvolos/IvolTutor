@@ -1,1 +1,23 @@
-* text=auto eol=lf
+# 1. Автоматична нормалізація закінчень рядків (ВСІМ ПОТРІБНО)
+# Зберігає файли в git як LF, а на Windows конвертує в CRLF при скачуванні
+* text=auto
+
+# 2. Явно вказуємо, що ці файли завжди текстові (про всяк випадок)
+*.js text
+*.css text
+*.html text
+*.py text
+*.md text
+
+# 3. Баш-скрипти завжди повинні мати LF, навіть на Windows (інакше не запустяться)
+*.sh text eol=lf
+
+# 4. Зображення та шрифти - це бінарні файли (не намагайся їх міняти чи шукати різницю в тексті)
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.woff binary
+*.ttf binary

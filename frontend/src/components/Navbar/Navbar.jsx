@@ -1,7 +1,10 @@
 import { useState } from 'react';
-import ThemeToggle from './ThemeToggle';
-import HelpPage from './HelpPage';
 import styles from './Navbar.module.css';
+
+import ThemeToggle from './ThemeToggle';
+import HamburgerButton from './HamburgerButton';
+import SidebarMenu from './SidebarMenu';
+import HelpPage from './HelpPage';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -18,17 +21,7 @@ export default function Navbar() {
       <header className={styles.container}>
         {/* Ліва частина: гамбургер + назва */}
         <div className={styles.left}>
-          <button
-            type="button"
-            className={`${styles.hamburger_menu} ${isMenuOpen ? styles.active : ''}`}
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-label="Open menu"
-            aria-expanded={isMenuOpen}
-          >
-            <span className={styles.hamburger_line}></span>
-            <span className={styles.hamburger_line}></span>
-            <span className={styles.hamburger_line}></span>
-          </button>
+          <HamburgerButton isOpen={isMenuOpen} onClick={() => setIsMenuOpen(!isMenuOpen)} />
 
           <h1 className={styles.title}>
             <span className={styles.title_gradient}>Tutor</span> CRM
@@ -43,37 +36,7 @@ export default function Navbar() {
           </button>
         </div>
 
-        {/* --- ВИПАДАЮЧЕ МЕНЮ --- */}
-        <div className={`${styles.mobile_menu} ${isMenuOpen ? styles.open : ''}`}>
-          <nav className={styles.mobile_menu_nav}>
-            
-            {/* ГРУПА 1: Основне меню */}
-            <div className={styles.menu_group_top}>
-              <div className={styles.menu_item}>
-                <span className={styles.menu_icon}>📅</span> Календар
-              </div>
-              <div className={styles.menu_item}>
-                <span className={styles.menu_icon}>📓</span> Журнал
-              </div>
-              <div className={styles.menu_item}>
-                <span className={styles.menu_icon}>👥</span> Студенти
-              </div>
-            </div>
-
-            {/* ГРУПА 2: Службове меню */}
-            <div className={styles.menu_group_bottom}>
-              <div className={styles.menu_separator}></div>
-              
-              <div className={styles.menu_item}>
-                <span className={styles.menu_icon}>⚙️</span> Налаштування
-              </div>
-
-              <div className={styles.menu_item} onClick={handleOpenHelp}>
-                <span className={styles.menu_icon}>❓</span> Допомога
-              </div>
-            </div>
-          </nav>
-        </div>
+        <SidebarMenu isOpen={isMenuOpen} onOpenHelp={handleOpenHelp} />
       </header>
 
       {showHelp && (

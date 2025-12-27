@@ -4,7 +4,7 @@ import styles from './Navbar.module.css';
 import ThemeToggle from './ThemeToggle';
 import HamburgerButton from './HamburgerButton';
 import SidebarMenu from './SidebarMenu';
-import HelpPage from './HelpPage';
+import HelpPage from '../../pages/Help/HelpPage';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -13,8 +13,10 @@ export default function Navbar() {
   // Функція для відкриття допомоги та закриття меню
   const handleOpenHelp = () => {
     setShowHelp(true);
-    setIsMenuOpen(false); // Закриваємо мобільне меню
+    setIsMenuOpen(false); // Закриваємо меню
   };
+
+  const closeMenu = () => setIsMenuOpen(false);
 
   return (
     <>
@@ -36,25 +38,8 @@ export default function Navbar() {
           </button>
         </div>
 
-        <SidebarMenu isOpen={isMenuOpen} onOpenHelp={handleOpenHelp} />
+        <SidebarMenu isOpen={isMenuOpen} onOpenHelp={handleOpenHelp} onClose={closeMenu}/>
       </header>
-
-      {showHelp && (
-        <div className={styles.help_modal_overlay}>
-          {/* Кнопка закриття (хрестик) */}
-          <button 
-            className={styles.close_help_button} 
-            onClick={() => setShowHelp(false)}
-          >
-            ✕
-          </button>
-          
-          {/* Сам компонент допомоги */}
-          <div className={styles.help_content_wrapper}>
-             <HelpPage />
-          </div>
-        </div>
-      )}
     </>
   );
 }

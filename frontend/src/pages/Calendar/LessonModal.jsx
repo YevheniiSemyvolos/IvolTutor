@@ -54,7 +54,7 @@ export default function LessonModal({ isOpen, onClose, onSubmit, students }) {
           </div>
 
           <div className={styles.modal_actions}>
-            <button type="button" onClick={onClose} className="btn btn-cancel">
+            <button type="button" onClick={onClose} className={`${styles.btn} ${styles.btn_cancel}`}>
               Скасувати
             </button>
             <button type="submit" className={`${styles.btn} ${styles.btn_save}`}>

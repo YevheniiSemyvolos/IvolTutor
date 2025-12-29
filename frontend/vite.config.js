@@ -9,7 +9,7 @@ export default defineConfig({
     port: 5173,
     watch: {
       usePolling: true, // Необхідно для Docker на Windows/Mac
-      interval: 1000, // Перевірка змін кожну секунду
+      interval: 3000, // Перевірка змін кожну секунду
     },
     hmr: {
       host: 'localhost', // Для HMR через localhost

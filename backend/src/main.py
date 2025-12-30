@@ -10,8 +10,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles  # <--- Імпорт для статики
 from sqlmodel import Session, select
 
+
 from .database import init_db, get_session
-from .models import Student, Lesson
+from .models import Student, StudentCreate, StudentUpdate, Lesson, Transaction
 
 app = FastAPI(title="Tutor CRM API")
 
@@ -82,7 +83,8 @@ def read_students(session: Session = Depends(get_session)):
     return students
 
 @app.post("/students/", response_model=Student)
-def create_student(student: Student, session: Session = Depends(get_session)):
+def create_student(student_in: StudentCreate, session: Session = Depends(get_session)):
+    student = Student.model_validate(student_in)
     session.add(student)
     session.commit()
     session.refresh(student)
@@ -131,3 +133,19 @@ def update_lesson_date(
     session.commit()
     session.refresh(lesson)
     return lesson
+
+@app.patch("/students/{student_id}", response_model=Student)
+def update_student(student_id: uuid.UUID, student_in: StudentUpdate, session: Session = Depends(get_session)):
+    student = session.get(Student, student_id)
+    if not student:
+        raise HTTPException(status_code=404, detail="Student not found")
+    
+    # Оновлюємо тільки ті поля, що прийшли
+    student_data = student_in.model_dump(exclude_unset=True)
+    for key, value in student_data.items():
+        setattr(student, key, value)
+        
+    session.add(student)
+    session.commit()
+    session.refresh(student)
+    return student

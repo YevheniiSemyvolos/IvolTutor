@@ -4,7 +4,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import axios from 'axios';
-import LessonModal from './LessonModal';
+import LessonModal from './Modals/LessonModal';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 

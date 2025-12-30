@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import useTheme from '../../hooks/useTheme';
-import './ThemeToggle.css';
+import useTheme from '../../../hooks/useTheme';
+import styles from './ThemeToggle.module.css';
 
 export default function ThemeToggle() {
   const { theme, setTheme } = useTheme();
@@ -17,19 +17,19 @@ export default function ThemeToggle() {
   const currentOption = options.find(opt => opt.value === theme) || options[2];
 
   return (
-    <div className="theme-toggle-container">
+    <div className={styles.container}>
       {/* 1. Головна кнопка */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="theme-toggle-button"
+        className={styles.button}
         aria-label="Theme selector"
         aria-expanded={isOpen}
       >
-        <span className="theme-toggle-icon">{currentOption.icon}</span>
-        <span className="theme-toggle-label">{currentOption.label}</span>
+        <span className={styles.icon}>{currentOption.icon}</span>
+        <span className={styles.label}>{currentOption.label}</span>
         {/* Стрілочка вниз */}
         <svg 
-          className={`theme-toggle-arrow ${isOpen ? 'open' : ''}`}
+          className={`${styles.arrow} ${isOpen ? styles.open : ''}`}
           fill="none" 
           stroke="currentColor" 
           viewBox="0 0 24 24"
@@ -40,19 +40,19 @@ export default function ThemeToggle() {
 
       {/* 3. Випадаюче меню */}
       {isOpen && (
-        <div className="theme-toggle-dropdown">
-          <ul className="theme-toggle-menu-list">
+        <div className={styles.dropdown}>
+          <ul className={styles.menu_list}>
             {options.map((opt) => (
-              <li key={opt.value} className="theme-toggle-menu-item">
+              <li key={opt.value} className={styles.menu_item}>
                 <button
                   onClick={() => {
                     setTheme(opt.value);
                     setIsOpen(false);
                   }}
-                  className={`theme-toggle-menu-button ${theme === opt.value ? 'active' : ''}`}
+                  className={`${styles.menu_button} ${theme === opt.value ? styles.active : ''}`}
                 >
-                  <span className="theme-toggle-menu-icon">{opt.icon}</span>
-                  <span className="theme-toggle-menu-label">{opt.label}</span>
+                  <span className={styles.menu_icon}>{opt.icon}</span>
+                  <span className={styles.menu_label}>{opt.label}</span>
                 </button>
               </li>
             ))}

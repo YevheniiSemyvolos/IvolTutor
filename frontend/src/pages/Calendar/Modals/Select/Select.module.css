@@ -1,0 +1,126 @@
+.container {
+  position: relative; /* Щоб випадаючий список позиціонувався відносно цього блоку */
+  width: 100%;
+}
+
+/* Саме поле, на яке клікаємо */
+.trigger {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #D1D5DB;
+  border-radius: 6px;
+  background-color: white;
+  font-size: 1rem;
+  color: #1f2937; /* Майже чорний */
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between; /* Текст зліва, стрілка справа */
+  align-items: center;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.trigger:hover {
+  border-color: #9ca3af;
+}
+
+/* Стан, коли список відкрито (активний) */
+.trigger.open {
+  border-color: #3B82F6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Стрілка */
+.arrow {
+  width: 20px;
+  height: 20px;
+  color: #6b7280;
+  transition: transform 0.3s ease; /* Плавний поворот */
+}
+
+/* Повертаємо стрілку, коли відкрито */
+.trigger.open .arrow {
+  transform: rotate(180deg);
+}
+
+/* Випадаючий список */
+.dropdown {
+  position: absolute;
+  top: 110%; /* Відступ знизу від поля */
+  left: 0;
+  width: 100%;
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  z-index: 50; /* Щоб був поверх інших елементів */
+  max-height: 200px; /* Якщо багато опцій - з'явиться скрол */
+  overflow-y: auto;
+  animation: fadeIn 0.15s ease-out;
+}
+
+/* Опція списку */
+.option {
+  padding: 10px 12px;
+  cursor: pointer;
+  color: #374151;
+  transition: background-color 0.1s;
+}
+
+.option:hover {
+  background-color: #f3f4f6; /* Світло-сірий при наведенні */
+  color: #111827;
+}
+
+/* Обрана опція */
+.option.selected {
+  background-color: #eff6ff; /* Світло-блакитний */
+  color: #2563EB;
+  font-weight: 500;
+}
+
+/* Placeholder (коли нічого не вибрано) */
+.placeholder {
+  color: #9ca3af;
+}
+
+/* --- DARK MODE --- */
+:global(.dark) .trigger {
+  background-color: #374151;
+  border-color: #4b5563;
+  color: white;
+}
+
+:global(.dark) .trigger.open {
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+}
+
+:global(.dark) .dropdown {
+  background-color: #1f2937;
+  border-color: #374151;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+}
+
+:global(.dark) .option {
+  color: #d1d5db;
+}
+
+:global(.dark) .option:hover {
+  background-color: #374151; /* Трохи світліший за фон */
+  color: white;
+}
+
+:global(.dark) .option.selected {
+  background-color: #1e3a8a; /* Темно-синій */
+  color: #60a5fa; /* Блакитний текст */
+}
+
+:global(.dark) .arrow {
+  color: #9ca3af;
+}
+
+/* Анімація появи */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}

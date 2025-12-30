@@ -1,81 +1,81 @@
-/* ThemeToggle Container */
-.theme-toggle-container {
+/* --- Container --- */
+.container {
   position: relative;
   z-index: 1001;
 }
 
 /* --- Main Button --- */
-.theme-toggle-button {
+.button {
   display: flex;
   align-items: center;
   gap: 0.625rem;
   padding: 0.625rem 1rem;
 
   background-color: rgba(255, 255, 255, 0.9);
-  
   border: 1.5px solid rgba(229, 231, 235, 0.6);
   border-radius: 0.75rem;
+  
   font-size: 0.875rem;
   font-weight: 600;
   color: #374151;
+  
   cursor: pointer;
   position: relative;
   overflow: hidden;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 
-  /* Важливо: додаємо background-color до transition */
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.theme-toggle-button:hover {
+/* Dark Mode Button */
+:global(.dark) .button {
+  background-color: rgba(31, 41, 55, 0.9);
+  border-color: rgba(75, 85, 99, 0.6);
+  color: #e5e7eb;
+}
+
+/* Button Hover State */
+.button:hover {
   background-color: rgba(243, 244, 246, 1);
   border-color: rgba(59, 130, 246, 0.5);
   transform: translateY(-1px);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
-.theme-toggle-button:active {
-  transform: translateY(0);
-}
-
-/* Темна тема для кнопки */
-.dark .theme-toggle-button {
-  background-color: rgba(31, 41, 55, 0.9); /* Темно-сірий напівпрозорий */
-  border-color: rgba(75, 85, 99, 0.6);
-  color: #e5e7eb;
-}
-
-.dark .theme-toggle-button:hover {
-  background-color: rgba(55, 65, 81, 1); /* Світліший темно-сірий */
+:global(.dark) .button:hover {
+  background-color: rgba(55, 65, 81, 1);
   border-color: rgba(96, 165, 250, 0.5);
 }
 
-/* --- Icon --- */
-.theme-toggle-icon {
+.button:active {
+  transform: translateY(0);
+}
+
+/* --- Icons & Labels --- */
+.icon {
   font-size: 1.125rem;
   line-height: 1;
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.theme-toggle-button:hover .theme-toggle-icon {
-  transform: scale(1.1) rotate(5deg);
-}
-
-.dark .theme-toggle-icon {
+:global(.dark) .icon {
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
 }
 
-/* --- Label --- */
-.theme-toggle-label {
+/* Анімація іконки при наведенні на КНОПКУ */
+.button:hover .icon {
+  transform: scale(1.1) rotate(5deg);
+}
+
+.label {
   position: relative;
   z-index: 1;
   font-weight: 600;
   letter-spacing: -0.01em;
 }
 
-/* --- Arrow Icon --- */
-.theme-toggle-arrow {
+.arrow {
   width: 1rem;
   height: 1rem;
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -83,12 +83,12 @@
   z-index: 1;
 }
 
-.theme-toggle-arrow.open {
+.arrow.open {
   transform: rotate(180deg);
 }
 
 /* --- Backdrop --- */
-.theme-toggle-backdrop {
+.backdrop {
   position: fixed;
   inset: 0;
   z-index: 999;
@@ -99,30 +99,25 @@
   transition: background-color 0.3s ease;
 }
 
-.dark .theme-toggle-backdrop {
+:global(.dark) .backdrop {
   background-color: rgba(0, 0, 0, 0.4);
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
 /* --- Dropdown Menu --- */
-.theme-toggle-dropdown {
+.dropdown {
   position: absolute;
   right: 0;
   top: calc(100% + 0.5rem);
   width: 11rem;
   
   background-color: rgba(255, 255, 255, 0.95);
-  
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   
   border: 1.5px solid rgba(229, 231, 235, 0.8);
   border-radius: 0.875rem;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  
   z-index: 1001;
   overflow: hidden;
   animation: slideDown 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -130,10 +125,110 @@
   transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.dark .theme-toggle-dropdown {
+:global(.dark) .dropdown {
   background-color: rgba(31, 41, 55, 0.95);
   border-color: rgba(75, 85, 99, 0.8);
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+}
+
+.menu_list {
+  padding: 0.375rem;
+  margin: 0;
+  list-style: none;
+}
+
+.menu_item {
+  margin: 0;
+}
+
+/* --- Menu Button Item --- */
+.menu_button {
+  width: 100%;
+  text-align: left;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 0.625rem;
+  
+  font-size: 0.875rem;
+  cursor: pointer;
+  color: #374151;
+  
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+:global(.dark) .menu_button {
+  color: #e5e7eb;
+}
+
+/* Hover state for Menu Item */
+.menu_button:hover {
+  background-color: rgba(243, 244, 246, 0.8);
+  transform: translateX(2px);
+}
+
+:global(.dark) .menu_button:hover {
+  background-color: rgba(55, 65, 81, 0.6);
+}
+
+/* Active State for Menu Item */
+.menu_button.active {
+  background-color: rgba(59, 130, 246, 0.1);
+  color: #2563eb;
+  font-weight: 600;
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+:global(.dark) .menu_button.active {
+  background-color: rgba(59, 130, 246, 0.2);
+  color: #60a5fa;
+  border-color: rgba(96, 165, 250, 0.4);
+}
+
+/* Checkmark Logic */
+.menu_button.active::after {
+  content: '✓';
+  position: absolute;
+  right: 1rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #2563eb;
+}
+
+:global(.dark) .menu_button.active::after {
+  color: #60a5fa;
+}
+
+/* Icon inside Menu Item */
+.menu_icon {
+  font-size: 1.125rem;
+  line-height: 1;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+  transition: transform 0.2s ease;
+}
+
+:global(.dark) .menu_icon {
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+}
+
+.menu_button:hover .menu_icon {
+  transform: scale(1.15);
+}
+
+.menu_label {
+  flex: 1;
+}
+
+/* --- Keyframes --- */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes slideDown {
@@ -145,97 +240,4 @@
     opacity: 1;
     transform: translateY(0);
   }
-}
-
-/* Menu List */
-.theme-toggle-menu-list {
-  padding: 0.375rem;
-  margin: 0;
-  list-style: none;
-}
-
-.theme-toggle-menu-item {
-  margin: 0;
-}
-
-/* --- Menu Button Item --- */
-.theme-toggle-menu-button {
-  width: 100%;
-  text-align: left;
-  padding: 0.75rem 1rem;
-  font-size: 0.875rem;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  background: transparent;
-  border: 1px solid transparent; /* Резервуємо місце під бордер */
-  border-radius: 0.625rem;
-  cursor: pointer;
-  color: #374151;
-  position: relative;
-  overflow: hidden;
-  
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.theme-toggle-menu-button:hover {
-  background-color: rgba(243, 244, 246, 0.8);
-  transform: translateX(2px);
-}
-
-.dark .theme-toggle-menu-button {
-  color: #e5e7eb;
-}
-
-.dark .theme-toggle-menu-button:hover {
-  background-color: rgba(55, 65, 81, 0.6);
-}
-
-/* --- Active Menu Item --- */
-.theme-toggle-menu-button.active {
-  background-color: rgba(59, 130, 246, 0.1);
-  color: #2563eb;
-  font-weight: 600;
-  border-color: rgba(59, 130, 246, 0.3);
-}
-
-.dark .theme-toggle-menu-button.active {
-  background-color: rgba(59, 130, 246, 0.2);
-  color: #60a5fa;
-  border-color: rgba(96, 165, 250, 0.4);
-}
-
-/* Menu Icon inside Item */
-.theme-toggle-menu-icon {
-  font-size: 1.125rem;
-  line-height: 1;
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
-  transition: transform 0.2s ease;
-}
-
-.theme-toggle-menu-button:hover .theme-toggle-menu-icon {
-  transform: scale(1.15);
-}
-
-.dark .theme-toggle-menu-icon {
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
-}
-
-/* Label inside Item */
-.theme-toggle-menu-label {
-  flex: 1;
-}
-
-/* Checkmark */
-.theme-toggle-menu-button.active::after {
-  content: '✓';
-  position: absolute;
-  right: 1rem;
-  font-size: 0.875rem;
-  font-weight: 700;
-  color: #2563eb;
-}
-
-.dark .theme-toggle-menu-button.active::after {
-  color: #60a5fa;
 }

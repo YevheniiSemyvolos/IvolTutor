@@ -1,0 +1,233 @@
+.overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background-color: rgba(0, 0, 0, 0.5);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 10000;
+}
+
+.content {
+	background-color: white;
+	padding: 24px;
+	border-radius: 12px;
+	box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+	width: 400px;
+	max-width: 90%;
+	position: relative;
+}
+
+.form_title {
+  font-size: '1.25rem';
+  font-weight: 'bold'; 
+  margin-bottom: '16px';
+}
+
+.form_group {
+	margin-bottom: 16px;
+}
+
+.form_label {
+	display: block;
+	margin-bottom: 6px;
+	font-weight: 600;
+	color: #374151;
+	font-size: 0.9rem;
+}
+
+.form_input, .form_select {
+	width: 100%;
+	padding: 10px;
+	border: 1px solid #D1D5DB;
+	border-radius: 6px;
+	font-size: 1rem;
+	outline: none;
+	box-sizing: border-box;
+}
+
+.form_select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  
+  /* Малюємо сіру стрілку через SVG */
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 10px center; /* Відступ стрілки від правого краю */
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+}
+
+.form_select:focus {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 12l4-4 4 4'/%3e%3c/svg%3e");
+}
+
+.form_input:focus, .form_select:focus {
+	border-color: #3B82F6;
+	box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form_input::-webkit-outer-spin-button,
+.form_input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.btns {
+	display: flex;
+	justify-content: flex-end;
+	gap: 10px;
+	margin-top: 24px;
+}
+
+.btn {
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: background 0.2s;
+}
+
+.btn_cancel {
+	background-color: white;
+	border: 1px solid #e5e7eb;
+	color: #4b5563; /* gray-600 */
+
+	font-weight: 600; /* Текст трохи жирніший */
+	letter-spacing: 0.01em;
+
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+
+	/* Плавна анімація всіх властивостей */
+	transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.btn_cancel:hover { 
+	background-color: #f9fafb; /* Трохи сіріший фон */
+  border-color: #d1d5db;     /* Рамка стає чіткішою */
+  color: #111827;            /* Текст стає майже чорним */
+  
+  /* Кнопка трохи підіймається вгору */
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+.btn_cancel:active {
+  background-color: #f3f4f6;
+  transform: translateY(0); /* Повертається назад */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* Тінь зникає */
+}
+.btn_cancel:focus-visible {
+  outline: 2px solid #e5e7eb;
+  outline-offset: 2px;
+}
+
+.btn_save {
+  background-color: #2563EB;
+  color: white;
+
+	padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  
+  /* Плавна анімація зміни кольору */
+  transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.btn_save:hover { 
+	background-color: #1D4ED8;
+
+	/* Кнопка трохи підіймається вгору */
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.btn_save:active {
+  background-color: #1E40AF; /* blue-800 */
+
+  transform: translateY(0); /* Повертається назад */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* Тінь зникає */
+}
+
+
+
+
+/* Змінюємо фон картки на темно-сірий і додаємо легкий бордер для контрасту */
+:global(.dark) .content {
+  background-color: #1f2937; /* gray-800 */
+  color: #f3f4f6;
+  border: 1px solid #374151; /* gray-700 */
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5); /* Тінь темніша */
+}
+
+/* Міняємо колір тексту заголовків */
+:global(.dark) .form_label {
+  color: #d1d5db; /* gray-300 */
+}
+
+/* Інпути стають темними */
+:global(.dark) .form_input,
+:global(.dark) .form_select {
+  background-color: #374151; /* gray-700 */
+  border-color: #4b5563; /* gray-600 */
+  color: white;
+}
+
+:global(.dark) .form_select {
+  /* Міняємо колір стрілки на світло-сірий (%239ca3af) */
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+}
+
+/* Фокус в інпутах (трохи світліший синій) */
+:global(.dark) .form_input:focus,
+:global(.dark) .form_select:focus {
+  border-color: #60a5fa; /* blue-400 */
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+}
+
+:global(.dark) .form_select:focus {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 12l4-4 4 4'/%3e%3c/svg%3e");
+}
+
+/* Робимо іконку календаря та годинника білою */
+:global(.dark) .form_input::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
+}
+
+/* Кнопка "Скасувати" в темній темі */
+:global(.dark) .btn_cancel {
+  background-color: transparent; /* Прозорий фон */
+  border: 1px solid #4b5563;     /* Чітка сіра рамка */
+  color: #e5e7eb;                /* Світлий текст */
+  box-shadow: none;
+}
+
+:global(.dark) .btn_cancel:hover {
+  background-color: rgba(255, 255, 255, 0.05); /* Легка підсвітка при наведенні */
+  border-color: #9ca3af; /* Рамка світлішає */
+  color: white;
+  transform: translateY(-1px);
+}
+
+:global(.dark) .btn_cancel:active {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(0);
+}
+
+/* Кнопка "Зберегти" залишається синьою, але можна трохи адаптувати */
+:global(.dark) .btn_save {
+  background-color: #3b82f6; /* blue-500 */
+}
+:global(.dark) .btn_save:hover {
+  background-color: #2563eb; /* blue-600 */
+}
+
+:global(.dark) .btn_save:active {
+  background-color: #1D4ED8; /* blue-700 */
+  transform: translateY(0);
+}
+

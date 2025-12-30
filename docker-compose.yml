@@ -16,6 +16,7 @@ services:
     build: ./backend
     volumes:
       - ./backend:/app
+      - ./backend/uploads:/app/uploads  # <--- ДОДАЙТЕ ЦЕЙ РЯДОК
     ports:
       - "8000:8000"
     environment:

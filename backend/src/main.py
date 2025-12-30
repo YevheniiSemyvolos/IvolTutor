@@ -1,18 +1,29 @@
 # backend/src/main.py
-from fastapi import FastAPI, Depends, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
-from sqlmodel import Session, select
+import os
+import shutil
+import uuid
 from typing import List
 from datetime import datetime
+
+from fastapi import FastAPI, Depends, HTTPException, File, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles  # <--- Імпорт для статики
+from sqlmodel import Session, select
 
 from .database import init_db, get_session
 from .models import Student, Lesson
 
 app = FastAPI(title="Tutor CRM API")
 
-# --- Налаштування CORS (Щоб React бачив Python) ---
+# --- Налаштування папки завантажень ---
+UPLOAD_DIR = "uploads"
+# Створюємо папку, якщо її немає (важливо для першого запуску)
+if not os.path.exists(UPLOAD_DIR):
+    os.makedirs(UPLOAD_DIR)
+
+# --- Налаштування CORS ---
 origins = [
-    "http://localhost:5173",  # Порт Vite (Frontend)
+    "http://localhost:5173",
     "http://127.0.0.1:5173",
 ]
 
@@ -24,24 +35,52 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# --- Подія запуску ---
+# --- Підключення статики (доступ до файлів за посиланням) ---
+# Тепер файли з папки uploads доступні за адресою http://localhost:8000/uploads/...
+app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
+
+
 @app.on_event("startup")
 def on_startup():
-    init_db()  # Створити таблиці в БД автоматично
+    init_db()
 
-# --- Базові Ендпоінти (Приклади) ---
+# --- ЕНДПОІНТ ЗАВАНТАЖЕННЯ ФАЙЛІВ ---
+@app.post("/upload/")
+async def upload_file(file: UploadFile = File(...)):
+    """
+    Зберігає завантажений файл і повертає посилання на нього.
+    """
+    # 1. Генеруємо унікальне ім'я файлу, щоб уникнути конфліктів
+    # Отримуємо розширення (наприклад, .pdf або .jpg)
+    file_extension = os.path.splitext(file.filename)[1]
+    # Створюємо нове ім'я: uuid + розширення
+    unique_filename = f"{uuid.uuid4()}{file_extension}"
+    
+    # 2. Повний шлях до файлу
+    file_path = os.path.join(UPLOAD_DIR, unique_filename)
+    
+    # 3. Зберігаємо файл на диск
+    with open(file_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+        
+    # 4. Формуємо URL для доступу
+    # (У реальному проді тут може бути повний домен, але для локальної розробки достатньо відносного шляху)
+    file_url = f"/uploads/{unique_filename}"
+    
+    return {"filename": file.filename, "url": file_url}
+
+
+# --- Базові Ендпоінти ---
 
 @app.get("/")
 def read_root():
     return {"message": "Tutor CRM API is running!"}
 
-# Отримати всіх учнів
 @app.get("/students/", response_model=List[Student])
 def read_students(session: Session = Depends(get_session)):
     students = session.exec(select(Student)).all()
     return students
 
-# Створити учня
 @app.post("/students/", response_model=Student)
 def create_student(student: Student, session: Session = Depends(get_session)):
     session.add(student)
@@ -49,8 +88,6 @@ def create_student(student: Student, session: Session = Depends(get_session)):
     session.refresh(student)
     return student
 
-
-# 1. Отримати список уроків (з фільтром по датах)
 @app.get("/lessons/", response_model=List[Lesson])
 def get_lessons(
     start: datetime, 
@@ -64,10 +101,8 @@ def get_lessons(
     results = session.exec(statement).all()
     return results
 
-# 2. Створити новий урок
 @app.post("/lessons/", response_model=Lesson)
 def create_lesson(lesson: Lesson, session: Session = Depends(get_session)):
-    # Перевіряємо, чи існує студент
     student = session.get(Student, lesson.student_id)
     if not student:
         raise HTTPException(status_code=404, detail="Student not found")
@@ -77,18 +112,16 @@ def create_lesson(lesson: Lesson, session: Session = Depends(get_session)):
     session.refresh(lesson)
     return lesson
 
-# 3. Перенести урок (Drag-and-Drop)
 @app.patch("/lessons/{lesson_id}", response_model=Lesson)
 def update_lesson_date(
     lesson_id: str, 
-    lesson_data: dict, # Отримуємо тільки те, що змінилося (start/end)
+    lesson_data: dict,
     session: Session = Depends(get_session)
 ):
     lesson = session.get(Lesson, lesson_id)
     if not lesson:
         raise HTTPException(status_code=404, detail="Lesson not found")
     
-    # Оновлюємо поля
     if "start_time" in lesson_data:
         lesson.start_time = datetime.fromisoformat(lesson_data["start_time"].replace("Z", "+00:00"))
     if "end_time" in lesson_data:

@@ -1,0 +1,270 @@
+.container {
+  padding: 2rem;
+  max-width: 64rem; /* 1024px */
+  margin: 0 auto;
+}
+
+.backBtn {
+  margin-bottom: 1.5rem;
+  color: #2563eb;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.backBtn:hover {
+  text-decoration: underline;
+}
+
+:global(.dark) .backBtn {
+  color: #60a5fa;
+}
+
+/* Картка студента */
+.card {
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  border: 1px solid #f3f4f6;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  margin-bottom: 2rem;
+  transition: background-color 0.3s;
+}
+
+:global(.dark) .card {
+  background-color: #1f2937;
+  border-color: #374151;
+}
+
+.cardHeader {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .cardHeader {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.studentName {
+  font-size: 1.875rem; /* 30px */
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+:global(.dark) .studentName {
+  color: white;
+}
+
+.parentName {
+  color: #6b7280;
+  margin-top: 0.25rem;
+}
+
+:global(.dark) .parentName {
+  color: #9ca3af;
+}
+
+/* Баланс */
+.balanceBadge {
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.75rem;
+  font-weight: 700;
+  font-size: 1.125rem;
+}
+
+.positive {
+  background-color: #f0fdf4;
+  color: #15803d;
+  border: 1px solid #dcfce7;
+}
+
+:global(.dark) .positive {
+  background-color: rgba(21, 128, 61, 0.2);
+  color: #4ade80;
+  border-color: rgba(21, 128, 61, 0.5);
+}
+
+.negative {
+  background-color: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fee2e2;
+}
+
+:global(.dark) .negative {
+  background-color: rgba(185, 28, 28, 0.2);
+  color: #f87171;
+  border-color: rgba(185, 28, 28, 0.5);
+}
+
+/* Деталі (сітка) */
+.detailsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .detailsGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.detailItem {
+  background-color: #f9fafb;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid #f3f4f6;
+}
+
+:global(.dark) .detailItem {
+  background-color: rgba(55, 65, 81, 0.5);
+  border-color: #374151;
+}
+
+.detailLabel {
+  display: block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #9ca3af;
+  margin-bottom: 0.25rem;
+}
+
+.detailValue {
+  font-weight: 500;
+  color: #1f2937;
+}
+
+:global(.dark) .detailValue {
+  color: #f3f4f6;
+}
+
+/* Таблиця */
+.sectionTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: #1f2937;
+}
+
+:global(.dark) .sectionTitle {
+  color: white;
+}
+
+.tableCard {
+  background-color: white;
+  border-radius: 1rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  border: 1px solid #f3f4f6;
+  overflow: hidden;
+}
+
+:global(.dark) .tableCard {
+  background-color: #1f2937;
+  border-color: #374151;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.th {
+  background-color: #f9fafb;
+  padding: 1rem;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: #6b7280;
+  letter-spacing: 0.05em;
+}
+
+:global(.dark) .th {
+  background-color: rgba(55, 65, 81, 0.5);
+  color: #9ca3af;
+}
+
+.td {
+  padding: 1rem;
+  border-bottom: 1px solid #f3f4f6;
+  color: #374151;
+}
+
+:global(.dark) .td {
+  border-bottom-color: #374151;
+  color: #d1d5db;
+}
+
+.tr:hover {
+  background-color: #f9fafb;
+}
+
+:global(.dark) .tr:hover {
+  background-color: rgba(55, 65, 81, 0.5);
+}
+
+/* Статуси */
+.statusBadge {
+  padding: 0.25rem 0.625rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.statusCompleted {
+  background-color: #dcfce7;
+  color: #15803d;
+}
+
+:global(.dark) .statusCompleted {
+  background-color: rgba(21, 128, 61, 0.3);
+  color: #4ade80;
+}
+
+.statusCancelled {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+:global(.dark) .statusCancelled {
+  background-color: rgba(185, 28, 28, 0.3);
+  color: #f87171;
+}
+
+.statusPlanned {
+  background-color: #dbeafe;
+  color: #1d4ed8;
+}
+
+:global(.dark) .statusPlanned {
+  background-color: rgba(29, 78, 216, 0.3);
+  color: #60a5fa;
+}
+
+.emptyState {
+  padding: 2.5rem;
+  text-align: center;
+  color: #6b7280;
+}
+
+:global(.dark) .emptyState {
+  color: #9ca3af;
+}

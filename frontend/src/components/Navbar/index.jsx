@@ -7,7 +7,8 @@ import SidebarMenu from './SidebarMenu';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [showHelp, setShowHelp] = useState(false); // !!! 2. Стан для відображення вікна допомоги
+  const [showHelp, setShowHelp] = useState(false); // Стан для відображення вікна допомоги
+  
 
   // Функція для відкриття допомоги та закриття меню
   const handleOpenHelp = () => {

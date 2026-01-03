@@ -1,80 +1,135 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import Select from './Select'; 
 import styles from './LessonModal.module.css';
-import Select from './Select';
 
-export default function LessonModal({ isOpen, onClose, onSubmit, students }) {
-  // --- СТАНИ (STATES) ---
+export default function LessonModal({ 
+  isOpen, 
+  onClose, 
+  onSubmit, 
+  onStatusChange, 
+  students, 
+  lessonToEdit, 
+  initialDateRange 
+}) {
+  // --- STATES ---
   const [studentId, setStudentId] = useState('');
-  const [grade, setGrade] = useState(''); // Клас
-  const [date, setDate] = useState(''); // Дата заняття
-  const [startTime, setStartTime] = useState(''); // Час початку
-  const [endTime, setEndTime] = useState(''); // Час кінця
-  const [frequency, setFrequency] = useState('once'); // Частота (за замовчуванням "одноразово")
+  const [date, setDate] = useState('');
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
+  const [topic, setTopic] = useState('');
+  const [grade, setGrade] = useState(''); // Залишив, якщо вам потрібно, хоча бекенд поки не приймає
+  const [frequency, setFrequency] = useState('once'); 
 
-  //опції для студентів
+  // --- USE EFFECT: Заповнення даних ---
+  useEffect(() => {
+    if (isOpen) {
+      if (lessonToEdit) {
+        // РЕДАГУВАННЯ: Заповнюємо даними з існуючого уроку
+        const startObj = new Date(lessonToEdit.start_time);
+        const endObj = new Date(lessonToEdit.end_time);
+
+        setStudentId(lessonToEdit.student_id);
+        setDate(startObj.toISOString().split('T')[0]); 
+        setStartTime(startObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }));
+        setEndTime(endObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }));
+        setTopic(lessonToEdit.topic || '');
+        setFrequency('once');
+        setGrade(''); 
+      } else {
+        // СТВОРЕННЯ: Очищаємо або беремо дані з календаря (initialDateRange)
+        setStudentId('');
+        setTopic('');
+        setGrade('');
+        setFrequency('once');
+
+        if (initialDateRange) {
+            // Якщо клікнули в календарі, беремо ці дату і час
+            const startObj = new Date(initialDateRange.startStr);
+            const endObj = new Date(initialDateRange.endStr);
+            
+            setDate(startObj.toISOString().split('T')[0]);
+            setStartTime(startObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }));
+            setEndTime(endObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }));
+        } else {
+            // Якщо просто відкрили кнопку "Новий урок" без виділення часу
+            setDate('');
+            setStartTime('');
+            setEndTime('');
+        }
+      }
+    }
+  }, [isOpen, lessonToEdit, initialDateRange]);
+
+  if (!isOpen) return null;
+
+  // --- SUBMIT ---
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    
+    // Формуємо ISO рядки
+    const startDateTime = `${date}T${startTime}:00`;
+    const endDateTime = `${date}T${endTime}:00`;
+
+    const payload = {
+      student_id: studentId,
+      start_time: startDateTime,
+      end_time: endDateTime,
+      topic: topic,
+      // grade та frequency поки ігноруємо для бекенду, або обробляємо окремо
+    };
+
+    onSubmit(payload);
+  };
+
+  // Опції
   const studentOptions = students.map(s => ({
     value: s.id,
     label: s.full_name
   }));
 
-  // опції для частоти
   const frequencyOptions = [
     { value: 'once', label: 'Одноразове заняття' },
-    { value: 'weekly', label: 'Щотижня' },
-    { value: 'biweekly', label: 'Раз на два тижні' }
+    { value: 'weekly', label: 'Щотижня (тільки цей)' }, 
   ];
-  
-  // Скидання форми при відкритті/закритті
-  useEffect(() => {
-    if (isOpen) {
-      setStudentId('');
-      setGrade('');
-      setDate('');
-      setStartTime('');
-      setEndTime('');
-      setFrequency('once');
-    }
-  }, [isOpen]);
-
-  if (!isOpen) return null;
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Збираємо об'єкт з усіма даними
-    onSubmit({
-      student_id: studentId,
-      grade,
-      date,
-      start_time: startTime,
-      end_time: endTime,
-      frequency,
-    });
-  };
 
   return (
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.content} onClick={e => e.stopPropagation()}>
-        <h2 className={styles.form_title}>Новий урок</h2>
+        <h2 className={styles.form_title}>
+          {lessonToEdit ? 'Редагувати урок' : 'Новий урок'}
+        </h2>
         
+        {/* Статус (Тільки при редагуванні) */}
+        {lessonToEdit && (
+          <div style={{marginBottom: '1rem', fontSize: '0.9rem', color: '#374151'}}>
+             Статус: <span style={{fontWeight: 'bold'}}>{
+                lessonToEdit.status === 'completed' ? '✅ Проведено' :
+                lessonToEdit.status === 'cancelled' ? '❌ Скасовано' :
+                lessonToEdit.status === 'no_show' ? '😡 Не прийшов' :
+                '📅 Заплановано'
+             }</span>
+          </div>
+        )}
+
         <form onSubmit={handleSubmit}>
-          {/* --- СТУДЕНТ --- */}
+          {/* Студент */}
           <div className={styles.form_group}>
             <label className={styles.form_label}>Студент</label>
             <Select 
               options={studentOptions}
               value={studentId}
-              onChange={(val) => setStudentId(val)}
+              onChange={setStudentId}
               placeholder="Оберіть студента..."
+              required
             />
           </div>
 
-          {/* --- КЛАС --- */}
+          {/* Клас (залишив поле візуально, як було) */}
           <div className={styles.form_group}>
             <label className={styles.form_label}>Клас</label>
             <input 
               type="number" 
-              min="1" 
-              max="12"
+              min="1" max="12"
               className={styles.form_input}
               value={grade}
               onChange={(e) => setGrade(e.target.value)}
@@ -82,7 +137,7 @@ export default function LessonModal({ isOpen, onClose, onSubmit, students }) {
             />
           </div>
 
-          {/* --- ДАТА --- */}
+          {/* Дата */}
           <div className={styles.form_group}>
             <label className={styles.form_label}>Дата заняття</label>
             <input 
@@ -94,7 +149,7 @@ export default function LessonModal({ isOpen, onClose, onSubmit, students }) {
             />
           </div>
 
-          {/* --- ЧАС (Початок і Кінець) --- */}
+          {/* Час */}
           <div style={{ display: 'flex', gap: '1rem' }}>
             <div className={styles.form_group} style={{ flex: 1 }}>
               <label className={styles.form_label}>Початок</label>
@@ -118,24 +173,66 @@ export default function LessonModal({ isOpen, onClose, onSubmit, students }) {
             </div>
           </div>
 
-          {/* --- ЧАСТОТА ЗАНЯТЬ --- */}
+          {/* Частота */}
+          {!lessonToEdit && (
+            <div className={styles.form_group}>
+                <label className={styles.form_label}>Частота занять</label>
+                <Select 
+                    options={frequencyOptions}
+                    value={frequency}
+                    onChange={setFrequency}
+                    placeholder="Частота"
+                />
+            </div>
+          )}
+
+          {/* Тема (Нове поле) */}
           <div className={styles.form_group}>
-            <label className={styles.form_label}>Частота занять</label>
-            <Select 
-              options={frequencyOptions}
-              value={frequency}
-              onChange={(val) => setFrequency(val)}
-              placeholder="Оберіть частоту"
+            <label className={styles.form_label}>Тема уроку</label>
+            <input 
+              type="text" 
+              className={styles.form_input}
+              value={topic}
+              onChange={(e) => setTopic(e.target.value)}
+              placeholder="Наприклад: Тригонометрія"
             />
           </div>
 
           {/* --- КНОПКИ --- */}
           <div className={styles.btns}>
-            <button type="button" onClick={onClose} className={`${styles.btn} ${styles.btn_cancel}`}>
-              Скасувати
+            <button 
+              type="button" 
+              onClick={onClose} 
+              className={`${styles.btn} ${styles.btn_close}`}
+            >
+              {lessonToEdit ? 'Закрити' : 'Скасувати'}
             </button>
+
+            {/* Додаткові кнопки для зміни статусу (тільки редагування) */}
+             {lessonToEdit && (
+              <>
+                <button 
+                  type="button" 
+                  className={`${styles.btn} ${styles.btn_cancel}`}
+                  onClick={() => onStatusChange('cancelled')}
+                  title="Скасувати урок"
+                >
+                  Скасувати
+                </button>
+
+                <button 
+                  type="button" 
+                  className={`${styles.btn} ${styles.btn_noshow}`}
+                  onClick={() => onStatusChange('no_show')}
+                  title="Не прийшов"
+                >
+                  Не прийшов
+                </button>
+              </>
+            )}
+            
             <button type="submit" className={`${styles.btn} ${styles.btn_save}`}>
-              Створити
+              {lessonToEdit ? 'Зберегти' : 'Створити'}
             </button>
           </div>
         </form>

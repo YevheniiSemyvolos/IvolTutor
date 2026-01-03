@@ -2,14 +2,13 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import StudentModal from './Modals/StudentModal';
-import styles from './Students.module.css'; // Імпорт
+import styles from './Students.module.css';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 export default function StudentsPage() {
   const [students, setStudents] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingStudent, setEditingStudent] = useState(null);
   const navigate = useNavigate();
 
   const fetchStudents = async () => {
@@ -25,30 +24,18 @@ export default function StudentsPage() {
     fetchStudents();
   }, []);
 
-  const handleSaveStudent = async (formData) => {
+  const handleCreateStudent = async (formData) => {
     try {
-      if (editingStudent) {
-        await axios.patch(`${API_URL}/students/${editingStudent.id}`, formData);
-      } else {
-        await axios.post(`${API_URL}/students/`, formData);
-      }
+      await axios.post(`${API_URL}/students/`, formData);
       setIsModalOpen(false);
-      setEditingStudent(null);
       fetchStudents();
     } catch (e) {
-      alert("Не вдалося зберегти дані");
+      alert("Не вдалося створити студента");
       console.error(e);
     }
   };
 
   const openAddModal = () => {
-    setEditingStudent(null);
-    setIsModalOpen(true);
-  };
-
-  const openEditModal = (student, e) => {
-    e.stopPropagation();
-    setEditingStudent(student);
     setIsModalOpen(true);
   };
 
@@ -69,11 +56,10 @@ export default function StudentsPage() {
             <table className={styles.table}>
             <thead>
                 <tr>
-                <th className={styles.th}>Ім'я</th>
-                <th className={styles.th}>Контакти</th>
-                <th className={styles.th}>Тариф</th>
-                <th className={styles.th}>Баланс</th>
-                <th className={`${styles.th}`} style={{textAlign: 'right'}}>Дії</th>
+                  <th className={styles.th}>Ім'я</th>
+                  <th className={styles.th}>Контакти</th>
+                  <th className={styles.th}>Тариф</th>
+                  <th className={styles.th}>Баланс</th>
                 </tr>
             </thead>
             <tbody>
@@ -94,14 +80,6 @@ export default function StudentsPage() {
                             {s.balance} грн
                         </span>
                     </td>
-                    <td className={styles.td} style={{textAlign: 'right'}}>
-                    <button 
-                        onClick={(e) => openEditModal(s, e)}
-                        className={styles.editBtn}
-                    >
-                        Редагувати
-                    </button>
-                    </td>
                 </tr>
                 ))}
             </tbody>
@@ -118,8 +96,8 @@ export default function StudentsPage() {
       <StudentModal 
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onSubmit={handleSaveStudent}
-        studentToEdit={editingStudent}
+        onSubmit={handleCreateStudent}
+        studentToEdit={null} // Завжди null, бо тут тільки створення
       />
     </div>
   );

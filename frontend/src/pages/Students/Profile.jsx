@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import styles from './Profile.module.css'; // Імпорт
+import styles from './Profile.module.css';
+import StudentModal from './Modals/StudentModal';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
@@ -11,34 +12,50 @@ export default function StudentProfile() {
   const [student, setStudent] = useState(null);
   const [lessons, setLessons] = useState([]);
   const [loading, setLoading] = useState(true);
+  
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+  // Функція завантаження даних
+  const fetchData = async () => {
+    try {
+      const resStudents = await axios.get(`${API_URL}/students/`);
+      const foundStudent = resStudents.data.find(s => s.id === id);
+      setStudent(foundStudent);
+
+      const resLessons = await axios.get(`${API_URL}/lessons/`, {
+          params: {
+              start: '2023-01-01T00:00:00',
+              end: '2028-01-01T00:00:00'
+          }
+      });
+      
+      const studentLessons = resLessons.data
+          .filter(l => l.student_id === id)
+          .sort((a, b) => new Date(b.start_time) - new Date(a.start_time));
+
+      setLessons(studentLessons);
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const resStudents = await axios.get(`${API_URL}/students/`);
-        const foundStudent = resStudents.data.find(s => s.id === id);
-        setStudent(foundStudent);
-
-        const resLessons = await axios.get(`${API_URL}/lessons/`, {
-            params: {
-                start: '2023-01-01T00:00:00',
-                end: '2028-01-01T00:00:00'
-            }
-        });
-        
-        const studentLessons = resLessons.data
-            .filter(l => l.student_id === id)
-            .sort((a, b) => new Date(b.start_time) - new Date(a.start_time));
-
-        setLessons(studentLessons);
-      } catch (error) {
-        console.error("Error fetching profile:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchData();
   }, [id]);
+
+  // Обробка збереження змін
+  const handleUpdateStudent = async (formData) => {
+    try {
+      await axios.patch(`${API_URL}/students/${id}`, formData);
+      setIsEditModalOpen(false);
+      fetchData(); // Оновлюємо дані на сторінці
+    } catch (e) {
+      alert("Не вдалося оновити дані");
+      console.error(e);
+    }
+  };
 
   if (loading) return <div className={styles.emptyState}>Завантаження...</div>;
   if (!student) return <div className={styles.emptyState}>Студента не знайдено</div>;
@@ -55,10 +72,27 @@ export default function StudentProfile() {
       {/* Картка студента */}
       <div className={styles.card}>
         <div className={styles.cardHeader}>
-            <div>
-                <h1 className={styles.studentName}>{student.full_name}</h1>
-                <p className={styles.parentName}>{student.parent_name ? `Батьки: ${student.parent_name}` : 'Батьки не вказані'}</p>
+            <div style={{display: 'flex', alignItems: 'center', gap: '1rem'}}>
+                <div>
+                  <h1 className={styles.studentName}>{student.full_name}</h1>
+                  <p className={styles.parentName}>{student.parent_name ? `Батьки: ${student.parent_name}` : 'Батьки не вказані'}</p>
+                </div>
+                
+                {/* Кнопка редагування (олівець) */}
+                <button 
+                  onClick={() => setIsEditModalOpen(true)}
+                  className={styles.edit}
+                  title="Редагувати профіль"
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.05)'}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                  </svg>
+                </button>
             </div>
+
             <div className={`${styles.balanceBadge} ${student.balance < 0 ? styles.negative : styles.positive}`}>
                 Баланс: {student.balance} грн
             </div>
@@ -80,7 +114,7 @@ export default function StudentProfile() {
         </div>
       </div>
 
-      {/* Архів занять */}
+      {/* Архів занять (без змін) */}
       <h2 className={styles.sectionTitle}>Архів занять</h2>
       <div className={styles.tableCard}>
         {lessons.length === 0 ? (
@@ -134,6 +168,14 @@ export default function StudentProfile() {
             </div>
         )}
       </div>
+
+      {/* 5. Модальне вікно редагування */}
+      <StudentModal 
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        onSubmit={handleUpdateStudent}
+        studentToEdit={student} // Передаємо поточного студента
+      />
     </div>
   );
 }

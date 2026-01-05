@@ -17,7 +17,6 @@ export default function LessonModal({
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
   const [topic, setTopic] = useState('');
-  const [grade, setGrade] = useState(''); // Залишив, якщо вам потрібно, хоча бекенд поки не приймає
   const [frequency, setFrequency] = useState('once'); 
 
   // --- USE EFFECT: Заповнення даних ---
@@ -34,12 +33,10 @@ export default function LessonModal({
         setEndTime(endObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }));
         setTopic(lessonToEdit.topic || '');
         setFrequency('once');
-        setGrade(''); 
       } else {
         // СТВОРЕННЯ: Очищаємо або беремо дані з календаря (initialDateRange)
         setStudentId('');
         setTopic('');
-        setGrade('');
         setFrequency('once');
 
         if (initialDateRange) {
@@ -70,15 +67,13 @@ export default function LessonModal({
     const startDateTime = `${date}T${startTime}:00`;
     const endDateTime = `${date}T${endTime}:00`;
 
-    const payload = {
+    onSubmit({
       student_id: studentId,
       start_time: startDateTime,
       end_time: endDateTime,
       topic: topic,
-      // grade та frequency поки ігноруємо для бекенду, або обробляємо окремо
-    };
-
-    onSubmit(payload);
+      status: lessonToEdit ? lessonToEdit.status : 'planned'
+    });
   };
 
   // Опції
@@ -121,19 +116,6 @@ export default function LessonModal({
               onChange={setStudentId}
               placeholder="Оберіть студента..."
               required
-            />
-          </div>
-
-          {/* Клас (залишив поле візуально, як було) */}
-          <div className={styles.form_group}>
-            <label className={styles.form_label}>Клас</label>
-            <input 
-              type="number" 
-              min="1" max="12"
-              className={styles.form_input}
-              value={grade}
-              onChange={(e) => setGrade(e.target.value)}
-              placeholder="Наприклад: 9"
             />
           </div>
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styles from './StudentModal.module.css'; // Імпорт стилів
 
-export default function StudentModal({ isOpen, onClose, onSubmit, studentToEdit }) {
+export default function StudentModal({ isOpen, onClose, onSubmit, student }) {
   const [formData, setFormData] = useState({
     full_name: '',
     parent_name: '',
@@ -12,14 +12,14 @@ export default function StudentModal({ isOpen, onClose, onSubmit, studentToEdit 
   });
 
   useEffect(() => {
-    if (studentToEdit) {
+    if (student) {
       setFormData({
-        full_name: studentToEdit.full_name || '',
-        parent_name: studentToEdit.parent_name || '',
-        telegram_contact: studentToEdit.telegram_contact || '',
-        grade: studentToEdit.grade || '',
-        default_price: studentToEdit.default_price || 0,
-        comment: studentToEdit.comment || ''
+        full_name: student.full_name || '',
+        parent_name: student.parent_name || '',
+        telegram_contact: student.telegram_contact || '',
+        grade: student.grade || '',
+        default_price: student.default_price || 0,
+        comment: student.comment || ''
       });
     } else {
       setFormData({
@@ -31,7 +31,7 @@ export default function StudentModal({ isOpen, onClose, onSubmit, studentToEdit 
         comment: ''
       });
     }
-  }, [isOpen, studentToEdit]);
+  }, [isOpen, student]);
 
   if (!isOpen) return null;
 
@@ -44,7 +44,7 @@ export default function StudentModal({ isOpen, onClose, onSubmit, studentToEdit 
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.modal} onClick={e => e.stopPropagation()}>
         <h2 className={styles.title}>
-          {studentToEdit ? 'Редагувати студента' : 'Новий студент'}
+          {student ? 'Редагувати студента' : 'Новий студент'}
         </h2>
         
         <form onSubmit={handleSubmit} className={styles.form}>
@@ -102,7 +102,7 @@ export default function StudentModal({ isOpen, onClose, onSubmit, studentToEdit 
               onChange={(e) => setFormData({...formData, default_price: Number(e.target.value)})}
               required
             />
-            {studentToEdit && (
+            {student && (
                 <p className={styles.hint}>
                     Зміна вплине лише на нові уроки.
                 </p>

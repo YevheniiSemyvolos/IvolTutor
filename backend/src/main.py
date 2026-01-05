@@ -63,7 +63,8 @@ def read_students(session: Session = Depends(get_session)):
 
 @app.post("/students/", response_model=Student)
 def create_student(student_in: StudentCreate, session: Session = Depends(get_session)):
-    student = Student.model_validate(student_in)
+    # construct Student from incoming data (avoid pydantic v2-only methods)
+    student = Student(**student_in.dict())
     session.add(student)
     session.commit()
     session.refresh(student)
@@ -75,7 +76,7 @@ def update_student(student_id: uuid.UUID, student_in: StudentUpdate, session: Se
     if not student:
         raise HTTPException(status_code=404, detail="Student not found")
     
-    student_data = student_in.model_dump(exclude_unset=True)
+    student_data = student_in.dict(exclude_unset=True)
     for key, value in student_data.items():
         setattr(student, key, value)
         
@@ -107,14 +108,14 @@ def create_lesson(lesson_in: LessonCreate, session: Session = Depends(get_sessio
         raise HTTPException(status_code=404, detail="Student not found")
     
     # 2. Перевіряємо ціну
-    lesson_data = lesson_in.model_dump()
+    lesson_data = lesson_in.dict()
     
     # Якщо ціна не передана, беремо default_price студента
     if lesson_data.get("price") is None:
         lesson_data["price"] = student.default_price
         
     # 3. Створюємо запис
-    lesson = Lesson.model_validate(lesson_data)
+    lesson = Lesson(**lesson_data)
         
     session.add(lesson)
     session.commit()
@@ -123,7 +124,7 @@ def create_lesson(lesson_in: LessonCreate, session: Session = Depends(get_sessio
 
 @app.patch("/lessons/{lesson_id}", response_model=Lesson)
 def update_lesson(
-    lesson_id: str, 
+    lesson_id: uuid.UUID, 
     lesson_in: LessonUpdate, # Використовуємо LessonUpdate для гнучкості
     session: Session = Depends(get_session)
 ):

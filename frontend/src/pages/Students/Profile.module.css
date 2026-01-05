@@ -152,6 +152,17 @@
   color: #f3f4f6;
 }
 
+.commentSection {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb; /* сірий розділювач */
+}
+
+/* Підтримка темної теми для розділювача */
+:global(.dark) .commentSection {
+  border-color: #374151; 
+}
+
 /* Таблиця */
 .sectionTitle {
   font-size: 1.5rem;

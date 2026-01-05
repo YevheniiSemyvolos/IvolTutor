@@ -23,15 +23,15 @@ export default function StudentProfile() {
       setStudent(foundStudent);
 
       const resLessons = await axios.get(`${API_URL}/lessons/`, {
-          params: {
-              start: '2023-01-01T00:00:00',
-              end: '2028-01-01T00:00:00'
-          }
+        params: {
+          start: '2023-01-01T00:00:00',
+          end: '2028-01-01T00:00:00'
+        }
       });
       
       const studentLessons = resLessons.data
-          .filter(l => l.student_id === id)
-          .sort((a, b) => new Date(b.start_time) - new Date(a.start_time));
+        .filter(l => l.student_id === id)
+        .sort((a, b) => new Date(b.start_time) - new Date(a.start_time));
 
       setLessons(studentLessons);
     } catch (error) {
@@ -72,109 +72,120 @@ export default function StudentProfile() {
       {/* Картка студента */}
       <div className={styles.card}>
         <div className={styles.cardHeader}>
-            <div style={{display: 'flex', alignItems: 'center', gap: '1rem'}}>
-                <div>
-                  <h1 className={styles.studentName}>{student.full_name}</h1>
-                  <p className={styles.parentName}>{student.parent_name ? `Батьки: ${student.parent_name}` : 'Батьки не вказані'}</p>
-                </div>
-                
-                {/* Кнопка редагування (олівець) */}
-                <button 
-                  onClick={() => setIsEditModalOpen(true)}
-                  className={styles.edit}
-                  title="Редагувати профіль"
-                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.05)'}
-                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                  </svg>
-                </button>
+          <div style={{display: 'flex', alignItems: 'center', gap: '1rem'}}>
+            <div>
+              <h1 className={styles.studentName}>{student.full_name}</h1>
+              <p className={styles.parentName}>
+                {student.parent_name ? `Батьки: ${student.parent_name}` : 'Батьки не вказані'}
+              </p>
             </div>
+            
+            {/* Кнопка редагування (олівець) */}
+            <button 
+              onClick={() => setIsEditModalOpen(true)}
+              className={styles.edit}
+              title="Редагувати профіль"
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.05)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+              </svg>
+            </button>
+          </div>
 
-            <div className={`${styles.balanceBadge} ${student.balance < 0 ? styles.negative : styles.positive}`}>
-                Баланс: {student.balance} грн
-            </div>
+          <div className={`${styles.balanceBadge} ${student.balance < 0 ? styles.negative : styles.positive}`}>
+            Баланс: {student.balance} грн
+          </div>
         </div>
         
+        {/* Основна інформація: Клас, Контакт, Тариф */}
         <div className={styles.detailsGrid}>
-            <div className={styles.detailItem}>
-                <span className={styles.detailLabel}>Контакт</span>
-                <span className={styles.detailValue}>{student.telegram_contact || '-'}</span>
-            </div>
-            <div className={styles.detailItem}>
-                <span className={styles.detailLabel}>Тариф</span>
-                <span className={styles.detailValue}>{student.default_price} грн</span>
-            </div>
-            <div className={styles.detailItem}>
-                <span className={styles.detailLabel}>Коментар</span>
-                <span className={styles.detailValue}>{student.comment || '-'}</span>
-            </div>
+          <div className={styles.detailItem}>
+            <span className={styles.detailLabel}>Клас</span>
+            <span className={styles.detailValue}>{student.grade || '-'}</span>
+          </div>
+          <div className={styles.detailItem}>
+            <span className={styles.detailLabel}>Контакт</span>
+            <span className={styles.detailValue}>{student.telegram_contact || '-'}</span>
+          </div>
+          <div className={styles.detailItem}>
+            <span className={styles.detailLabel}>Тариф</span>
+            <span className={styles.detailValue}>{student.default_price} грн</span>
+          </div>
+        </div>
+
+        {/* Коментар окремим блоком знизу */}
+        <div className={styles.commentSection}>
+          <span className={styles.detailLabel}>Коментар</span>
+          <div className={styles.detailValue} style={{ whiteSpace: 'pre-wrap', marginTop: '0.25rem' }}>
+            {student.comment || '-'}
+          </div>
         </div>
       </div>
 
-      {/* Архів занять (без змін) */}
+      {/* Архів занять */}
       <h2 className={styles.sectionTitle}>Архів занять</h2>
       <div className={styles.tableCard}>
         {lessons.length === 0 ? (
-            <div className={styles.emptyState}>Історія занять порожня</div>
+          <div className={styles.emptyState}>Історія занять порожня</div>
         ) : (
-            <div className={styles.tableWrapper}>
-                <table className={styles.table}>
-                    <thead>
-                        <tr>
-                            <th className={styles.th}>Дата</th>
-                            <th className={styles.th}>Тема</th>
-                            <th className={styles.th}>Статус</th>
-                            <th className={styles.th}>Ціна</th>
-                            <th className={styles.th}>Матеріали</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {lessons.map(lesson => (
-                            <tr key={lesson.id} className={styles.tr}>
-                                <td className={styles.td}>
-                                    <div style={{fontWeight: 500}}>{new Date(lesson.start_time).toLocaleDateString('uk-UA')}</div>
-                                    <div style={{fontSize: '0.75rem', color: '#9ca3af'}}>
-                                        {new Date(lesson.start_time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                                    </div>
-                                </td>
-                                <td className={styles.td}>{lesson.topic || 'Без теми'}</td>
-                                <td className={styles.td}>
-                                    <span className={`${styles.statusBadge} ${
-                                        lesson.status === 'completed' ? styles.statusCompleted :
-                                        lesson.status === 'cancelled' ? styles.statusCancelled :
-                                        styles.statusPlanned
-                                    }`}>
-                                        {lesson.status === 'completed' ? 'Проведено' : 
-                                         lesson.status === 'cancelled' ? 'Скасовано' : 'Заплановано'}
-                                    </span>
-                                </td>
-                                <td className={styles.td}>{lesson.price} грн</td>
-                                <td className={styles.td}>
-                                    {lesson.homeworks && lesson.homeworks.length > 0 ? (
-                                        <a href="#" style={{color: '#2563eb', textDecoration: 'none'}}>
-                                            Матеріали ({lesson.homeworks.length})
-                                        </a>
-                                    ) : (
-                                        <span style={{color: '#9ca3af'}}>—</span>
-                                    )}
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
+          <div className={styles.tableWrapper}>
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th className={styles.th}>Дата</th>
+                  <th className={styles.th}>Тема</th>
+                  <th className={styles.th}>Статус</th>
+                  <th className={styles.th}>Ціна</th>
+                  <th className={styles.th}>Матеріали</th>
+                </tr>
+              </thead>
+              <tbody>
+                {lessons.map(lesson => (
+                  <tr key={lesson.id} className={styles.tr}>
+                    <td className={styles.td}>
+                      <div style={{fontWeight: 500}}>{new Date(lesson.start_time).toLocaleDateString('uk-UA')}</div>
+                      <div style={{fontSize: '0.75rem', color: '#9ca3af'}}>
+                        {new Date(lesson.start_time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                      </div>
+                    </td>
+                    <td className={styles.td}>{lesson.topic || 'Без теми'}</td>
+                    <td className={styles.td}>
+                      <span className={`${styles.statusBadge} ${
+                        lesson.status === 'completed' ? styles.statusCompleted :
+                        lesson.status === 'cancelled' ? styles.statusCancelled :
+                        styles.statusPlanned
+                      }`}>
+                        {lesson.status === 'completed' ? 'Проведено' : 
+                         lesson.status === 'cancelled' ? 'Скасовано' : 'Заплановано'}
+                      </span>
+                    </td>
+                    <td className={styles.td}>{lesson.price} грн</td>
+                    <td className={styles.td}>
+                      {lesson.homeworks && lesson.homeworks.length > 0 ? (
+                        <a href="#" style={{color: '#2563eb', textDecoration: 'none'}}>
+                          Матеріали ({lesson.homeworks.length})
+                        </a>
+                      ) : (
+                        <span style={{color: '#9ca3af'}}>—</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
 
-      {/* 5. Модальне вікно редагування */}
+      {/* Модальне вікно редагування */}
       <StudentModal 
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
         onSubmit={handleUpdateStudent}
-        studentToEdit={student} // Передаємо поточного студента
+        studentToEdit={student} 
       />
     </div>
   );

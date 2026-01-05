@@ -34,14 +34,6 @@
   opacity: 1;
 }
 
-:global(.dark) .hamburger_menu {
-  border-color: rgba(75, 85, 99, 0.5);
-}
-
-:global(.dark) .hamburger_menu:hover {
-  border-color: rgba(96, 165, 250, 0.5);
-}
-
 .hamburger_line {
   width: 100%;
   height: 2.5px;
@@ -51,9 +43,7 @@
   transform-origin: center;
 }
 
-:global(.dark) .hamburger_line {
-  background-color: #818cf8; /* indigo-400 */
-}
+/* Dark mode styles (moved to file end) */
 
 /* Анімація гамбургера в хрестик */
 .hamburger_menu.active .hamburger_line:nth-child(1) {
@@ -74,4 +64,17 @@
     height: 2.25rem;
     padding: 0.5rem;
   }
+}
+
+/* Dark mode styles (moved to file end) */
+:global(.dark) .hamburger_menu {
+  border-color: rgba(75, 85, 99, 0.5);
+}
+
+:global(.dark) .hamburger_menu:hover {
+  border-color: rgba(96, 165, 250, 0.5);
+}
+
+:global(.dark) .hamburger_line {
+  background-color: #818cf8; /* indigo-400 */
 }

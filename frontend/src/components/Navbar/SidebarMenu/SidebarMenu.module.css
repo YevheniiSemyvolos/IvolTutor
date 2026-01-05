@@ -68,14 +68,6 @@
   background-color: rgba(243, 244, 246, 1);
 }
 
-:global(.dark) .item {
-  color: #e5e7eb;
-}
-
-:global(.dark) .item:hover {
-  background-color: rgba(55, 65, 81, 0.6);
-}
-
 .icon {
   font-size: 1.2rem;
   width: 24px;
@@ -88,13 +80,24 @@
   margin: 8px 0;
 }
 
-:global(.dark) .separator {
-  background-color: rgba(75, 85, 99, 0.8);
-}
-
 @media (max-width: 768px) {
   .container {
     width: 100%;
     border-right: none;
   }
+}
+
+
+
+
+:global(.dark) .item {
+  color: #e5e7eb;
+}
+
+:global(.dark) .item:hover {
+  background-color: rgba(55, 65, 81, 0.6);
+}
+
+:global(.dark) .separator {
+  background-color: rgba(75, 85, 99, 0.8);
 }

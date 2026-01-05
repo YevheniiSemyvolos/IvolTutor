@@ -24,12 +24,6 @@
   height: var(--navbar-height);
 }
 
-:global(.dark) .container {
-  background-color: rgba(17, 24, 39, 0.85);
-  border-bottom-color: rgba(55, 65, 81, 0.8);
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
-}
-
 /* Left Section */
 .left {
   display: flex;
@@ -56,10 +50,6 @@
   text-overflow: ellipsis;
   min-width: 0;
   transition: color 0.3s ease;
-}
-
-:global(.dark) .title {
-  color: #f3f4f6;
 }
 
 .title_gradient {
@@ -186,4 +176,17 @@
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+
+
+
+
+:global(.dark) .container {
+  background-color: rgba(17, 24, 39, 0.85);
+  border-bottom-color: rgba(55, 65, 81, 0.8);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+}
+
+:global(.dark) .title {
+  color: #f3f4f6;
 }

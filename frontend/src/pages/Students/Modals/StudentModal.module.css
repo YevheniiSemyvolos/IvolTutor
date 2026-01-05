@@ -21,22 +21,11 @@
   transition: background-color 0.3s;
 }
 
-/* Dark Mode */
-:global(.dark) .modal {
-  background-color: #1f2937; /* gray-800 */
-  color: #f3f4f6;
-  border: 1px solid #374151;
-}
-
 .title {
   font-size: 1.25rem;
   font-weight: 700;
   margin-bottom: 1rem;
   color: #1f2937;
-}
-
-:global(.dark) .title {
-  color: #f3f4f6;
 }
 
 .form {
@@ -57,10 +46,6 @@
   font-weight: 500;
   color: #374151;
   margin-bottom: 0.25rem;
-}
-
-:global(.dark) .label {
-  color: #d1d5db;
 }
 
 .input, .textarea {
@@ -86,21 +71,10 @@
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
-:global(.dark) .input, 
-:global(.dark) .textarea {
-  background-color: #374151; /* gray-700 */
-  border-color: #4b5563; /* gray-600 */
-  color: white;
-}
-
 .hint {
   font-size: 0.75rem;
   color: #6b7280;
   margin-top: 0.25rem;
-}
-
-:global(.dark) .hint {
-  color: #9ca3af;
 }
 
 .actions {
@@ -145,4 +119,47 @@
 
 .btnSave:hover {
   background-color: #1d4ed8; /* blue-700 */
+}
+
+/* Dark Mode styles placed at the end of the file */
+:global(.dark) .modal {
+  background-color: #1f2937; /* gray-800 */
+  color: #f3f4f6;
+  border: 1px solid #374151;
+}
+
+:global(.dark) .title {
+  color: #f3f4f6;
+}
+
+:global(.dark) .label {
+  color: #d1d5db;
+}
+
+:global(.dark) .input, 
+:global(.dark) .textarea {
+  background-color: #374151; /* gray-700 */
+  border-color: #4b5563; /* gray-600 */
+  color: white;
+}
+
+:global(.dark) .hint {
+  color: #9ca3af;
+}
+
+:global(.dark) .btnCancel {
+  background-color: #374151;
+  color: #e5e7eb;
+}
+
+:global(.dark) .btnCancel:hover {
+  background-color: #4b5563;
+}
+
+:global(.dark) .btnSave {
+  background-color: #3b82f6; /* blue-500 for dark */
+}
+
+:global(.dark) .btnSave:hover {
+  background-color: #2563eb; /* blue-600 */
 }

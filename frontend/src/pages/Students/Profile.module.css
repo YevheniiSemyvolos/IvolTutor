@@ -36,11 +36,6 @@
   transition: background-color 0.3s;
 }
 
-:global(.dark) .card {
-  background-color: #1f2937;
-  border-color: #374151;
-}
-
 .cardHeader {
   display: flex;
   flex-direction: column;
@@ -61,10 +56,6 @@
   font-weight: 700;
   color: #111827;
   margin: 0;
-}
-
-:global(.dark) .studentName {
-  color: white;
 }
 
 .parentName {
@@ -90,23 +81,12 @@
   border: 1px solid #dcfce7;
 }
 
-:global(.dark) .positive {
-  background-color: rgba(21, 128, 61, 0.2);
-  color: #4ade80;
-  border-color: rgba(21, 128, 61, 0.5);
-}
-
 .negative {
   background-color: #fef2f2;
   color: #b91c1c;
   border: 1px solid #fee2e2;
 }
 
-:global(.dark) .negative {
-  background-color: rgba(185, 28, 28, 0.2);
-  color: #f87171;
-  border-color: rgba(185, 28, 28, 0.5);
-}
 
 /* Деталі (сітка) */
 .detailsGrid {
@@ -129,10 +109,6 @@
   border: 1px solid #f3f4f6;
 }
 
-:global(.dark) .detailItem {
-  background-color: rgba(55, 65, 81, 0.5);
-  border-color: #374151;
-}
 
 .detailLabel {
   display: block;
@@ -148,19 +124,10 @@
   color: #1f2937;
 }
 
-:global(.dark) .detailValue {
-  color: #f3f4f6;
-}
-
 .commentSection {
   margin-top: 1.5rem;
   padding-top: 1rem;
   border-top: 1px solid #e5e7eb; /* сірий розділювач */
-}
-
-/* Підтримка темної теми для розділювача */
-:global(.dark) .commentSection {
-  border-color: #374151; 
 }
 
 /* Таблиця */
@@ -169,10 +136,6 @@
   font-weight: 700;
   margin-bottom: 1.5rem;
   color: #1f2937;
-}
-
-:global(.dark) .sectionTitle {
-  color: white;
 }
 
 .tableCard {
@@ -196,12 +159,6 @@
   transition: background 0.2s;
 }
 
-
-:global(.dark) .tableCard {
-  background-color: #1f2937;
-  border-color: #374151;
-}
-
 .tableWrapper {
   overflow-x: auto;
 }
@@ -222,28 +179,14 @@
   letter-spacing: 0.05em;
 }
 
-:global(.dark) .th {
-  background-color: rgba(55, 65, 81, 0.5);
-  color: #9ca3af;
-}
-
 .td {
   padding: 1rem;
   border-bottom: 1px solid #f3f4f6;
   color: #374151;
 }
 
-:global(.dark) .td {
-  border-bottom-color: #374151;
-  color: #d1d5db;
-}
-
 .tr:hover {
   background-color: #f9fafb;
-}
-
-:global(.dark) .tr:hover {
-  background-color: rgba(55, 65, 81, 0.5);
 }
 
 /* Статуси */
@@ -259,14 +202,87 @@
   color: #15803d;
 }
 
-:global(.dark) .statusCompleted {
-  background-color: rgba(21, 128, 61, 0.3);
-  color: #4ade80;
-}
-
 .statusCancelled {
   background-color: #fee2e2;
   color: #b91c1c;
+}
+
+
+.statusPlanned {
+  background-color: #dbeafe;
+  color: #1d4ed8;
+}
+
+.emptyState {
+  padding: 2.5rem;
+  text-align: center;
+  color: #6b7280;
+}
+
+
+
+
+:global(.dark) .card {
+  background-color: #1f2937;
+  border-color: #374151;
+}
+
+:global(.dark) .studentName {
+  color: white;
+}
+
+:global(.dark) .positive {
+  background-color: rgba(21, 128, 61, 0.2);
+  color: #4ade80;
+  border-color: rgba(21, 128, 61, 0.5);
+}
+
+:global(.dark) .negative {
+  background-color: rgba(185, 28, 28, 0.2);
+  color: #f87171;
+  border-color: rgba(185, 28, 28, 0.5);
+}
+
+:global(.dark) .detailItem {
+  background-color: rgba(55, 65, 81, 0.5);
+  border-color: #374151;
+}
+
+:global(.dark) .detailValue {
+  color: #f3f4f6;
+}
+
+:global(.dark) .commentSection {
+  border-color: #374151; 
+}
+
+
+:global(.dark) .sectionTitle {
+  color: white;
+}
+
+:global(.dark) .tableCard {
+  background-color: #1f2937;
+  border-color: #374151;
+}
+
+:global(.dark) .th {
+  background-color: rgba(55, 65, 81, 0.5);
+  color: #9ca3af;
+}
+
+:global(.dark) .td {
+  border-bottom-color: #374151;
+  color: #d1d5db;
+}
+
+:global(.dark) .tr:hover {
+  background-color: rgba(55, 65, 81, 0.5);
+}
+
+:global(.dark) .statusCompleted {
+  background-color: rgba(21, 128, 61, 0.3);
+  color: #4ade80;
 }
 
 :global(.dark) .statusCancelled {
@@ -274,20 +290,9 @@
   color: #f87171;
 }
 
-.statusPlanned {
-  background-color: #dbeafe;
-  color: #1d4ed8;
-}
-
 :global(.dark) .statusPlanned {
   background-color: rgba(29, 78, 216, 0.3);
   color: #60a5fa;
-}
-
-.emptyState {
-  padding: 2.5rem;
-  text-align: center;
-  color: #6b7280;
 }
 
 :global(.dark) .emptyState {

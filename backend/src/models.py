@@ -8,6 +8,7 @@ class StudentBase(SQLModel):
     full_name: str
     parent_name: Optional[str] = None
     telegram_contact: Optional[str] = None
+    grade: Optional[int] = None
     default_price: float = Field(default=0.0)
     comment: Optional[str] = None
 
@@ -24,6 +25,7 @@ class StudentUpdate(SQLModel):
     full_name: Optional[str] = None
     parent_name: Optional[str] = None
     telegram_contact: Optional[str] = None
+    grade: Optional[int] = None
     default_price: Optional[float] = None
     comment: Optional[str] = None
 

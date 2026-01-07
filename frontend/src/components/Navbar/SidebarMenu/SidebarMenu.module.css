@@ -25,11 +25,6 @@
   pointer-events: auto;
 }
 
-:global(.dark) .container {
-  background-color: rgba(17, 24, 39, 0.95);
-  border-right-color: rgba(75, 85, 99, 0.8);
-}
-
 /* Внутрішній контейнер */
 .nav {
   height: 100%;
@@ -88,7 +83,10 @@
 }
 
 
-
+:global(.dark) .container {
+  background-color: rgba(17, 24, 39, 0.95);
+  border-right-color: rgba(75, 85, 99, 0.8);
+}
 
 :global(.dark) .item {
   color: #e5e7eb;

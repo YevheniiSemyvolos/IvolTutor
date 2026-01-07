@@ -44,6 +44,17 @@ export default function StudentProfile() {
     fetchData();
   }, [slug]);
 
+  // Функція для розрахунку списаної ціни залежно від статусу
+  const getChargedPrice = (lesson) => {
+    if (lesson.status === 'completed') {
+      return lesson.price; // 100% ціни
+    } else if (lesson.status === 'no_show') {
+      return lesson.price * 0.5; // 50% ціни
+    } else {
+      return 0; // cancelled, planned - не списано
+    }
+  };
+
   // Обробка збереження змін
   const handleUpdateStudent = async (formData) => {
     try {
@@ -164,7 +175,7 @@ export default function StudentProfile() {
                          'Заплановано'}
                       </span>
                     </td>
-                    <td className={styles.td}>{lesson.price} грн</td>
+                    <td className={styles.td}>{getChargedPrice(lesson)} грн</td>
                     <td className={styles.td}>
                       {lesson.homeworks && lesson.homeworks.length > 0 ? (
                         <a href="#" style={{color: '#2563eb', textDecoration: 'none'}}>

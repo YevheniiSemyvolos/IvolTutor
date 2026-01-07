@@ -148,34 +148,58 @@ def create_lesson(lesson_in: LessonCreate, session: Session = Depends(get_sessio
 @app.patch("/lessons/{lesson_id}", response_model=Lesson)
 def update_lesson(
     lesson_id: uuid.UUID, 
-    lesson_in: LessonUpdate, # Використовуємо LessonUpdate для гнучкості
+    lesson_in: LessonUpdate,
     session: Session = Depends(get_session)
 ):
     lesson = session.get(Lesson, lesson_id)
     if not lesson:
         raise HTTPException(status_code=404, detail="Lesson not found")
     
-    # Check if status is changing to 'completed' (and wasn't already completed)
-    is_completing = (lesson_in.status == 'completed' and lesson.status != 'completed')
+    # Отримуємо старий статус
+    old_status = lesson.status
+    new_status = lesson_in.status if lesson_in.status else old_status
     
+    # Оновлюємо дані уроку
     lesson_data = lesson_in.model_dump(exclude_unset=True)
     for key, value in lesson_data.items():
         setattr(lesson, key, value)
     
-    # If lesson is being marked as completed, deduct from student balance
-    if is_completing:
-        student = session.get(Student, lesson.student_id)
-        if student:
-            student.balance -= lesson.price
+    # Логіка змін балансу
+    student = session.get(Student, lesson.student_id)
+    if student and old_status != new_status:
+        # Функція для розрахунку списаної суми залежно від статусу
+        def get_deduction_amount(status):
+            if status == 'completed':
+                return lesson.price
+            elif status == 'no_show':
+                return lesson.price * 0.5
+            else:  # planned, cancelled
+                return 0
+        
+        old_deduction = get_deduction_amount(old_status)
+        new_deduction = get_deduction_amount(new_status)
+        
+        # Розраховуємо корекцію балансу
+        balance_change = old_deduction - new_deduction
+        student.balance += balance_change
+        
+        # Створюємо транзакцію
+        if balance_change != 0:
+            comment = ""
+            if new_status == 'completed':
+                comment = f"Проведено заняття на тему: {lesson.topic or 'без назви'}"
+            elif new_status == 'no_show':
+                comment = f"Учень не прийшов (50% від ціни заняття)"
+            elif new_status == 'cancelled':
+                comment = f"Скасування заняття (повернення коштів)"
             
-            # Create transaction record
             transaction = Transaction(
                 student_id=lesson.student_id,
-                amount=-lesson.price,
-                comment=f"Проведено заняття на тему: {lesson.topic or 'без назви'}"
+                amount=-balance_change,
+                comment=comment
             )
             session.add(transaction)
-        
+    
     session.add(lesson)
     session.commit()
     session.refresh(lesson)

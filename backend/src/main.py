@@ -14,7 +14,7 @@ from .database import init_db, get_session
 from .models import (
     Student, StudentCreate, StudentUpdate, 
     Lesson, LessonCreate, LessonUpdate, 
-    Transaction, generate_slug
+    Transaction, Payment, PaymentCreate, generate_slug
 )
 
 app = FastAPI(title="Tutor CRM API")
@@ -204,3 +204,40 @@ def update_lesson(
     session.commit()
     session.refresh(lesson)
     return lesson
+
+
+# --- ПЛАТЕЖИ ---
+@app.post("/payments/", response_model=Payment)
+def create_payment(payment_in: PaymentCreate, session: Session = Depends(get_session)):
+    """Створити платіж і оновити баланс студента"""
+    # Перевіряємо, чи існує студент
+    student = session.get(Student, payment_in.student_id)
+    if not student:
+        raise HTTPException(status_code=404, detail="Student not found")
+    
+    # Створюємо платіж
+    payment = Payment(**payment_in.dict())
+    session.add(payment)
+    
+    # Оновлюємо баланс студента
+    student.balance += payment_in.amount
+    
+    # Створюємо транзакцію
+    transaction = Transaction(
+        student_id=payment_in.student_id,
+        amount=payment_in.amount,
+        comment=payment_in.comment or "Поповнення балансу"
+    )
+    session.add(transaction)
+    
+    session.add(student)
+    session.commit()
+    session.refresh(payment)
+    return payment
+
+@app.get("/payments/student/{student_id}", response_model=List[Payment])
+def get_student_payments(student_id: uuid.UUID, session: Session = Depends(get_session)):
+    """Отримати всі платежи студента"""
+    statement = select(Payment).where(Payment.student_id == student_id)
+    payments = session.exec(statement).all()
+    return payments

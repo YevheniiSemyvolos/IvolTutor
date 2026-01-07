@@ -6,6 +6,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import LessonModal from './Modals/LessonModal';
 import LessonResultModal from './Modals/LessonResultModal';
+import PaymentModal from '../Students/Modals/PaymentModal';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
@@ -27,6 +28,8 @@ export default function Calendar() {
   const [errorMsg, setErrorMsg] = useState(null);
   const [isResultModalOpen, setIsResultModalOpen] = useState(false);
   const [lessonForResult, setLessonForResult] = useState(null);
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [selectedStudentForPayment, setSelectedStudentForPayment] = useState(null);
 
   const calendarRef = useRef(null);
 
@@ -200,6 +203,11 @@ export default function Calendar() {
   const handleOpenResultModal = (lesson) => {
     setLessonForResult(lesson);
     setIsResultModalOpen(true);
+  };
+
+  const handlePaymentSuccess = () => {
+    setIsPaymentModalOpen(false);
+    setSelectedStudentForPayment(null);
   };  
 
   return (
@@ -282,6 +290,14 @@ export default function Calendar() {
         onClose={() => setIsResultModalOpen(false)}
         onSuccess={handleResultSuccess}
         lessonId={lessonForResult?.id}
+      />
+
+      <PaymentModal 
+        isOpen={isPaymentModalOpen}
+        onClose={() => setIsPaymentModalOpen(false)}
+        onSuccess={handlePaymentSuccess}
+        preselectedStudentId={selectedStudentForPayment}
+        students={students}
       />
     </div>
   );

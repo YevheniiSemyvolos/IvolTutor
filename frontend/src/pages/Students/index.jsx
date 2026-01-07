@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import StudentModal from './Modals/StudentModal';
+import PaymentModal from './Modals/PaymentModal';
 import styles from './Students.module.css';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
@@ -9,6 +10,8 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 export default function StudentsPage() {
   const [students, setStudents] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [selectedStudentForPayment, setSelectedStudentForPayment] = useState(null);
   const navigate = useNavigate();
 
   const fetchStudents = async () => {
@@ -33,6 +36,12 @@ export default function StudentsPage() {
       alert("Не вдалося створити студента");
       console.error(e);
     }
+  };
+
+  const handlePaymentSuccess = () => {
+    setIsPaymentModalOpen(false);
+    setSelectedStudentForPayment(null);
+    fetchStudents(); // Refresh to show updated balance
   };
 
   const openAddModal = () => {
@@ -98,6 +107,14 @@ export default function StudentsPage() {
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleCreateStudent}
         studentToEdit={null} // Завжди null, бо тут тільки створення
+      />
+
+      <PaymentModal 
+        isOpen={isPaymentModalOpen}
+        onClose={() => setIsPaymentModalOpen(false)}
+        onSuccess={handlePaymentSuccess}
+        preselectedStudentId={selectedStudentForPayment}
+        students={students}
       />
     </div>
   );

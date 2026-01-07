@@ -26,6 +26,7 @@ class Student(StudentBase, table=True):
     balance: float = Field(default=0.0)
     lessons: List["Lesson"] = Relationship(back_populates="student")
     transactions: List["Transaction"] = Relationship(back_populates="student")
+    payments: List["Payment"] = Relationship(back_populates="student")
 
 class StudentCreate(StudentBase):
     pass
@@ -80,6 +81,21 @@ class Transaction(SQLModel, table=True):
     date: datetime = Field(default_factory=datetime.utcnow)
     comment: Optional[str] = None
     student: Optional[Student] = Relationship(back_populates="transactions")
+
+
+# --- 3.1 ПЛАТЕЖІ ---
+class PaymentBase(SQLModel):
+    amount: float
+    comment: Optional[str] = None
+
+class Payment(PaymentBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    student_id: uuid.UUID = Field(foreign_key="student.id")
+    date: datetime = Field(default_factory=datetime.utcnow)
+    student: Optional[Student] = Relationship(back_populates="payments")
+
+class PaymentCreate(PaymentBase):
+    student_id: uuid.UUID
 
 
 # --- 4. ДОМАШНІ ЗАВДАННЯ ---

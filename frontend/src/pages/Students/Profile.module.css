@@ -87,6 +87,33 @@
   border: 1px solid #fee2e2;
 }
 
+.paymentBtn {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #dbeafe;
+  background-color: #eff6ff;
+  color: #0369a1;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.paymentBtn:hover {
+  background-color: #bfdbfe;
+  border-color: #7dd3fc;
+}
+
+:global(.dark) .paymentBtn {
+  background-color: #0c2540;
+  color: #38bdf8;
+  border-color: #065f73;
+}
+
+:global(.dark) .paymentBtn:hover {
+  background-color: #082f49;
+  border-color: #0e7490;
+}
+
 
 /* Деталі (сітка) */
 .detailsGrid {

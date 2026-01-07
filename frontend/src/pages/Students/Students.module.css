@@ -181,3 +181,32 @@
 :global(.dark) .emptyState {
   color: #9ca3af;
 }
+
+.paymentBtn {
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.375rem;
+  border: 1px solid #dbeafe;
+  background-color: #eff6ff;
+  color: #0369a1;
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.paymentBtn:hover {
+  background-color: #bfdbfe;
+  border-color: #7dd3fc;
+}
+
+:global(.dark) .paymentBtn {
+  background-color: #0c2540;
+  color: #38bdf8;
+  border-color: #065f73;
+}
+
+:global(.dark) .paymentBtn:hover {
+  background-color: #082f49;
+  border-color: #0e7490;
+}

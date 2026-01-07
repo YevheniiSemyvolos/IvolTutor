@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styles from './Profile.module.css';
 import StudentModal from './Modals/StudentModal';
+import PaymentModal from './Modals/PaymentModal';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
@@ -12,8 +13,8 @@ export default function StudentProfile() {
   const [student, setStudent] = useState(null);
   const [lessons, setLessons] = useState([]);
   const [loading, setLoading] = useState(true);
-  
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
 
   // Функція завантаження даних
   const fetchData = async () => {
@@ -67,6 +68,12 @@ export default function StudentProfile() {
     }
   };
 
+  // Обробка успішного внесення платежу
+  const handlePaymentSuccess = () => {
+    fetchData(); // Оновлюємо дані, включаючи баланс
+    setIsPaymentModalOpen(false);
+  };
+
   if (loading) return <div className={styles.emptyState}>Завантаження...</div>;
   if (!student) return <div className={styles.emptyState}>Студента не знайдено</div>;
 
@@ -108,6 +115,14 @@ export default function StudentProfile() {
           <div className={`${styles.balanceBadge} ${student.balance < 0 ? styles.negative : styles.positive}`}>
             Баланс: {student.balance} грн
           </div>
+          
+          <button 
+            onClick={() => setIsPaymentModalOpen(true)}
+            className={styles.paymentBtn}
+            title="Внесити платіж"
+          >
+            💳 Внесити платіж
+          </button>
         </div>
         
         {/* Основна інформація: Клас, Контакт, Тариф */}
@@ -199,6 +214,15 @@ export default function StudentProfile() {
         onClose={() => setIsEditModalOpen(false)}
         onSubmit={handleUpdateStudent}
         student={student} 
+      />
+
+      {/* Модальне вікно внесення платежу */}
+      <PaymentModal 
+        isOpen={isPaymentModalOpen}
+        onClose={() => setIsPaymentModalOpen(false)}
+        onSuccess={handlePaymentSuccess}
+        preselectedStudentId={student?.id}
+        students={[]}
       />
     </div>
   );

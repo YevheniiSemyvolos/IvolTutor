@@ -55,8 +55,8 @@ export default function Calendar() {
         params: { start: fetchInfo.startStr, end: fetchInfo.endStr }
       });
 
-      //ФІЛЬТРАЦІЯ
-      const activeLessons = response.data.filter(lesson => lesson.status !== 'cancelled');
+      //ФІЛЬТРАЦІЯ - приховуємо скасовані уроки і уроки "не прийшов"
+      const activeLessons = response.data.filter(lesson => lesson.status !== 'cancelled' && lesson.status !== 'no_show');
 
       const formattedEvents = activeLessons.map(lesson => {
         return {
@@ -150,8 +150,8 @@ export default function Calendar() {
         // Для надійності:
         const newLesson = {
           ...formData,
-          status: 'planned',
-          price: 0 // Ціну бекенд підтягне сам, але передамо 0 про всяк випадок
+          status: 'planned'
+          // Ціну не передаємо - бекенд підтягне з профілю студента
         };
         await axios.post(`${API_URL}/lessons/`, newLesson);
       }

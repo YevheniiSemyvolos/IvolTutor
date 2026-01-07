@@ -43,13 +43,26 @@ def on_startup():
     init_db()
 
 @app.post("/upload/")
-async def upload_file(file: UploadFile = File(...)):
-    file_extension = os.path.splitext(file.filename)[1]
-    unique_filename = f"{uuid.uuid4()}{file_extension}"
-    file_path = os.path.join(UPLOAD_DIR, unique_filename)
-    with open(file_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
-    return {"filename": file.filename, "url": f"/uploads/{unique_filename}"}
+async def upload_file(files: list[UploadFile] = File(...)):
+    """Handle multiple file uploads"""
+    if not files:
+        raise HTTPException(status_code=400, detail="No files provided")
+    
+    uploaded_urls = []
+    
+    for file in files:
+        if file and file.filename:
+            file_extension = os.path.splitext(file.filename)[1]
+            unique_filename = f"{uuid.uuid4()}{file_extension}"
+            file_path = os.path.join(UPLOAD_DIR, unique_filename)
+            try:
+                with open(file_path, "wb") as buffer:
+                    shutil.copyfileobj(file.file, buffer)
+                uploaded_urls.append(f"/uploads/{unique_filename}")
+            except Exception as e:
+                raise HTTPException(status_code=500, detail=f"Failed to save file: {str(e)}")
+    
+    return {"files": uploaded_urls}
 
 @app.get("/")
 def read_root():
@@ -142,9 +155,26 @@ def update_lesson(
     if not lesson:
         raise HTTPException(status_code=404, detail="Lesson not found")
     
+    # Check if status is changing to 'completed' (and wasn't already completed)
+    is_completing = (lesson_in.status == 'completed' and lesson.status != 'completed')
+    
     lesson_data = lesson_in.model_dump(exclude_unset=True)
     for key, value in lesson_data.items():
         setattr(lesson, key, value)
+    
+    # If lesson is being marked as completed, deduct from student balance
+    if is_completing:
+        student = session.get(Student, lesson.student_id)
+        if student:
+            student.balance -= lesson.price
+            
+            # Create transaction record
+            transaction = Transaction(
+                student_id=lesson.student_id,
+                amount=-lesson.price,
+                comment=f"Проведено заняття на тему: {lesson.topic or 'без назви'}"
+            )
+            session.add(transaction)
         
     session.add(lesson)
     session.commit()

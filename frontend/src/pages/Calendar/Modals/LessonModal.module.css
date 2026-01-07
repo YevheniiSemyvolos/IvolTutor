@@ -228,6 +228,33 @@
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
+/* --- Кнопка "Проведено" (Зелена) --- */
+.btn_complete {
+  background-color: #d1fae5;
+  color: #047857;
+
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+
+  transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn_complete:hover {
+  background-color: #a7f3d0; /* Трохи темніший зелений при наведенні */
+
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(4, 120, 87, 0.2);
+}
+
+.btn_complete:active {
+  background-color: #6ee7b7;
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
 
 /* ТЕМНА ТЕМА */
 
@@ -322,4 +349,77 @@
 }
 :global(.dark) .btn_noshow:active {
   background-color: #331005;
+}
+
+:global(.dark) .btn_complete {
+  background-color: #064e3b;
+  color: #a7f3d0;
+}
+:global(.dark) .btn_complete:hover {
+  background-color: #0d5e47;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+}
+:global(.dark) .btn_complete:active {
+  background-color: #043f34;
+}
+
+/* Confirmation Modal Styles */
+.confirm_overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1100;
+}
+
+.confirm_content {
+  background-color: white;
+  padding: 32px;
+  border-radius: 12px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+  width: 420px;
+  max-width: 90%;
+  position: relative;
+}
+
+.confirm_title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 12px;
+  color: #111827;
+}
+
+.confirm_text {
+  font-size: 0.95rem;
+  color: #6b7280;
+  margin-bottom: 24px;
+}
+
+.confirm_btns {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+:global(.dark) .confirm_overlay {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+:global(.dark) .confirm_content {
+  background-color: #1f2937;
+  color: #f3f4f6;
+}
+
+:global(.dark) .confirm_title {
+  color: #f3f4f6;
+}
+
+:global(.dark) .confirm_text {
+  color: #d1d5db;
 }

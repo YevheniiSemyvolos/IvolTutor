@@ -7,6 +7,7 @@ export default function LessonModal({
   onClose, 
   onSubmit, 
   onStatusChange, 
+  onOpenResultModal,
   students, 
   lessonToEdit, 
   initialDateRange 
@@ -17,7 +18,8 @@ export default function LessonModal({
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
   const [topic, setTopic] = useState('');
-  const [frequency, setFrequency] = useState('once'); 
+  const [frequency, setFrequency] = useState('once');
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false); 
 
   // --- USE EFFECT: Заповнення даних ---
   useEffect(() => {
@@ -178,34 +180,82 @@ export default function LessonModal({
               {lessonToEdit ? 'Закрити' : 'Скасувати'}
             </button>
 
-            {/* Додаткові кнопки для зміни статусу (тільки редагування) */}
-             {lessonToEdit && (
+            {/* Додаткові кнопки для зміни статусу (тільки редагування, і тільки якщо не проведено) */}
+             {lessonToEdit && lessonToEdit.status !== 'completed' && (
               <>
                 <button 
                   type="button" 
                   className={`${styles.btn} ${styles.btn_cancel}`}
-                  onClick={() => onStatusChange('cancelled')}
+                  onClick={() => setShowCancelConfirm(true)}
                   title="Скасувати урок"
                 >
                   Скасувати
                 </button>
-
+                
                 <button 
                   type="button" 
-                  className={`${styles.btn} ${styles.btn_noshow}`}
-                  onClick={() => onStatusChange('no_show')}
-                  title="Не прийшов"
+                  className={`${styles.btn} ${styles.btn_complete}`}
+                  onClick={() => {
+                    onOpenResultModal(lessonToEdit);
+                    onClose();
+                  }}
+                  title="Фіксація результатів уроку"
                 >
-                  Не прийшов
+                  Проведено
                 </button>
               </>
             )}
             
-            <button type="submit" className={`${styles.btn} ${styles.btn_save}`}>
-              {lessonToEdit ? 'Зберегти' : 'Створити'}
-            </button>
+            {/* Кнопка Зберегти/Створити (приховується якщо урок проведено) */}
+            {!lessonToEdit || lessonToEdit.status !== 'completed' ? (
+              <button type="submit" className={`${styles.btn} ${styles.btn_save}`}>
+                {lessonToEdit ? 'Зберегти' : 'Створити'}
+              </button>
+            ) : null}
           </div>
         </form>
+
+        {/* Confirmation Modal for Cancel */}
+        {showCancelConfirm && (
+          <div className={styles.confirm_overlay} onClick={() => setShowCancelConfirm(false)}>
+            <div className={styles.confirm_content} onClick={(e) => e.stopPropagation()}>
+              <h3 className={styles.confirm_title}>Вибір дії для скасування</h3>
+              <p className={styles.confirm_text}>Виберіть причину скасування:</p>
+              
+              <div className={styles.confirm_btns}>
+                <button
+                  type="button"
+                  className={`${styles.btn} ${styles.btn_noshow}`}
+                  onClick={() => {
+                    onStatusChange('no_show');
+                    setShowCancelConfirm(false);
+                  }}
+                >
+                  Не прийшов
+                </button>
+
+                <button
+                  type="button"
+                  className={`${styles.btn} ${styles.btn_cancel}`}
+                  onClick={() => {
+                    onStatusChange('cancelled');
+                    setShowCancelConfirm(false);
+                  }}
+                >
+                  Скасувати
+                </button>
+
+                <button
+                  type="button"
+                  className={`${styles.btn} ${styles.btn_close}`}
+                  onClick={() => setShowCancelConfirm(false)}
+                >
+                  Закрити
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

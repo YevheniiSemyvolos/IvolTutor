@@ -5,6 +5,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import LessonModal from './Modals/LessonModal';
+import LessonResultModal from './Modals/LessonResultModal';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
@@ -24,6 +25,8 @@ export default function Calendar() {
   const [selectedRange, setSelectedRange] = useState(null);
   const [editingLesson, setEditingLesson] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
+  const [isResultModalOpen, setIsResultModalOpen] = useState(false);
+  const [lessonForResult, setLessonForResult] = useState(null);
 
   const calendarRef = useRef(null);
 
@@ -169,6 +172,13 @@ export default function Calendar() {
         return;
     }
 
+    // Якщо статус 'completed', то відкриємо LessonResultModal
+    if (newStatus === 'completed') {
+      setLessonForResult(editingLesson);
+      setIsResultModalOpen(true);
+      return;
+    }
+
     try {
         await axios.patch(`${API_URL}/lessons/${editingLesson.id}`, {
             status: newStatus
@@ -178,6 +188,18 @@ export default function Calendar() {
     } catch (error) {
         alert("Помилка зміни статусу");
     }
+  };
+
+  const handleResultSuccess = () => {
+    setIsResultModalOpen(false);
+    setLessonForResult(null);
+    handleCloseModal();
+    calendarRef.current?.getApi().refetchEvents();
+  };
+
+  const handleOpenResultModal = (lesson) => {
+    setLessonForResult(lesson);
+    setIsResultModalOpen(true);
   };  
 
   return (
@@ -248,10 +270,18 @@ export default function Calendar() {
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         onSubmit={handleSaveLesson}
-        onStatusChange={handleStatusChange} // Передаємо функцію зміни статусу
+        onStatusChange={handleStatusChange}
+        onOpenResultModal={handleOpenResultModal}
         students={students}
-        lessonToEdit={editingLesson}        // Передаємо урок для редагування
-        initialDateRange={selectedRange}    // Передаємо виділений діапазон для створення
+        lessonToEdit={editingLesson}
+        initialDateRange={selectedRange}
+      />
+
+      <LessonResultModal 
+        isOpen={isResultModalOpen}
+        onClose={() => setIsResultModalOpen(false)}
+        onSuccess={handleResultSuccess}
+        lessonId={lessonForResult?.id}
       />
     </div>
   );

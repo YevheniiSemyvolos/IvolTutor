@@ -48,6 +48,8 @@ class LessonBase(SQLModel):
     end_time: datetime 
     topic: Optional[str] = None
     status: str = Field(default="planned")
+    material_url: Optional[str] = None
+    homework_url: Optional[str] = None
 
 # Схема для створення (ціна опціональна, бо береться з профілю)
 class LessonCreate(LessonBase):

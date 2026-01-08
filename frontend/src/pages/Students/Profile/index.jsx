@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styles from './Profile.module.css';
-import StudentModal from './Modals/StudentModal';
-import PaymentModal from './Modals/PaymentModal';
+import StudentModal from '../Modals/StudentModal';
+import PaymentModal from '../Modals/PaymentModal';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 

@@ -112,13 +112,29 @@ def read_student_by_slug(slug: str, session: Session = Depends(get_session)):
 @app.get("/lessons/", response_model=List[Lesson])
 def get_lessons(
     start: datetime, 
-    end: datetime, 
+    end: datetime,
+    student_id: str | None = None,
+    status: str | None = None,
+    skip: int = 0,
+    limit: int = 100,
     session: Session = Depends(get_session)
 ):
     statement = select(Lesson).where(
         Lesson.start_time >= start,
         Lesson.start_time <= end
     )
+    
+    if student_id:
+        statement = statement.where(Lesson.student_id == student_id)
+    
+    if status:
+        # Підтримка множинних статусів, розділених комою
+        statuses = [s.strip() for s in status.split(',')]
+        statement = statement.where(Lesson.status.in_(statuses))
+    
+    # Сортування від найновіших до найстаріших
+    statement = statement.order_by(Lesson.start_time.desc()).offset(skip).limit(limit)
+    
     results = session.exec(statement).all()
     return results
 

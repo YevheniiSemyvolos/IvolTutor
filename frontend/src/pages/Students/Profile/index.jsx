@@ -13,37 +13,58 @@ export default function StudentProfile() {
   const [student, setStudent] = useState(null);
   const [lessons, setLessons] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [offset, setOffset] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
 
   // Функція завантаження даних
-  const fetchData = async () => {
+  const fetchData = async (newOffset = 0) => {
+    const isInitialLoad = newOffset === 0;
+    if (isInitialLoad) setLoading(true);
+    else setLoadingMore(true);
+
     try {
       const resStudent = await axios.get(`${API_URL}/students/${slug}`);
-      setStudent(resStudent.data);
+      if (isInitialLoad) setStudent(resStudent.data);
 
       const resLessons = await axios.get(`${API_URL}/lessons/`, {
         params: {
           start: '2023-01-01T00:00:00',
-          end: '2028-01-01T00:00:00'
+          end: '2028-01-01T00:00:00',
+          student_id: resStudent.data.id,
+          status: 'completed,cancelled,no_show',
+          skip: newOffset,
+          limit: 5
         }
       });
       
-      const studentLessons = resLessons.data
-        .filter(l => l.student_id === resStudent.data.id)
-        .sort((a, b) => new Date(b.start_time) - new Date(a.start_time));
+      if (isInitialLoad) {
+        setLessons(resLessons.data);
+      } else {
+        setLessons(prev => [...prev, ...resLessons.data]);
+      }
 
-      setLessons(studentLessons);
+      // Якщо отримано менше 5 занять, то більше немає
+      setHasMore(resLessons.data.length === 5);
+      setOffset(newOffset + 5);
     } catch (error) {
       console.error("Error fetching profile:", error);
     } finally {
-      setLoading(false);
+      if (isInitialLoad) setLoading(false);
+      else setLoadingMore(false);
     }
   };
 
   useEffect(() => {
-    fetchData();
+    fetchData(0);
   }, [slug]);
+
+  // Функція для завантаження ще 5 занять
+  const handleLoadMore = () => {
+    fetchData(offset);
+  };
 
   // Функція для розрахунку списаної ціни залежно від статусу
   const getChargedPrice = (lesson) => {
@@ -164,7 +185,6 @@ export default function StudentProfile() {
                   <th className={styles.th}>Тема</th>
                   <th className={styles.th}>Статус</th>
                   <th className={styles.th}>Ціна</th>
-                  <th className={styles.th}>Матеріали</th>
                 </tr>
               </thead>
               <tbody>
@@ -191,19 +211,22 @@ export default function StudentProfile() {
                       </span>
                     </td>
                     <td className={styles.td}>{getChargedPrice(lesson)} грн</td>
-                    <td className={styles.td}>
-                      {lesson.homeworks && lesson.homeworks.length > 0 ? (
-                        <a href="#" style={{color: '#2563eb', textDecoration: 'none'}}>
-                          Матеріали ({lesson.homeworks.length})
-                        </a>
-                      ) : (
-                        <span style={{color: '#9ca3af'}}>—</span>
-                      )}
-                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
+          </div>
+        )}
+        
+        {hasMore && (
+          <div style={{display: 'flex', justifyContent: 'center', marginTop: '1.5rem'}}>
+            <button 
+              onClick={handleLoadMore}
+              className={styles.loadMoreBtn}
+              disabled={loadingMore}
+            >
+              {loadingMore ? 'Завантаження...' : 'Ще...'}
+            </button>
           </div>
         )}
       </div>

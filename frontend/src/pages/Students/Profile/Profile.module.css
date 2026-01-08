@@ -334,3 +334,35 @@
 :global(.dark) .emptyState {
   color: #9ca3af;
 }
+
+.loadMoreBtn {
+  padding: 0.75rem 1.5rem;
+  background-color: #f3f4f6;
+  color: #374151;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.loadMoreBtn:hover:not(:disabled) {
+  background-color: #e5e7eb;
+  border-color: #9ca3af;
+}
+
+.loadMoreBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+:global(.dark) .loadMoreBtn {
+  background-color: #374151;
+  color: #d1d5db;
+  border-color: #4b5563;
+}
+
+:global(.dark) .loadMoreBtn:hover:not(:disabled) {
+  background-color: #4b5563;
+  border-color: #6b7280;
+}

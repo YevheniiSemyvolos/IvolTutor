@@ -63,16 +63,33 @@ export default function Calendar() {
       });
 
       const formattedEvents = response.data.map(lesson => {
+        // Знаходимо студента за ID
+        const student = students.find(s => s.id === lesson.student_id);
+        const studentName = student?.full_name || 'Студент';
+        const grade = student?.grade || '-';
+        
+        // Форматуємо час початку та кінця
+        const startTime = new Date(lesson.start_time).toLocaleTimeString('uk-UA', {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        });
+        const endTime = new Date(lesson.end_time).toLocaleTimeString('uk-UA', {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        });
+        
         return {
           id: lesson.id,
-          title: lesson.topic || 'Заняття', 
+          title: `${studentName} ${grade} клас`, 
           start: lesson.start_time,
           end: lesson.end_time,
           backgroundColor: EVENT_COLORS[lesson.status] || EVENT_COLORS.default,
           borderColor: 'transparent',
           editable: lesson.status !== 'completed', // Забороняємо редагування завершених уроків
           className: lesson.status === 'completed' ? 'event-completed' : '', // Клас для завершених уроків
-          extendedProps: { ...lesson } 
+          extendedProps: { ...lesson, displayTime: `${startTime} - ${endTime}` } 
         };
       });
 
@@ -83,7 +100,7 @@ export default function Calendar() {
       failureCallback(error);
       setErrorMsg("Помилка завантаження розкладу.");
     }
-  }, []);
+  }, [students]);
 
   // Обробка виділення часу
   const handleDateSelect = (selectInfo) => {
@@ -251,13 +268,27 @@ export default function Calendar() {
           }
         }}
 
-        slotMinTime="08:00:00"
+        slotMinTime="10:00:00"
         slotMaxTime="22:00:00"
         allDaySlot={false}
         nowIndicator={true}
         
         // Прив'язка даних
         events={fetchEventsSource} 
+        
+        // Кастомний рендеринг події
+        eventContent={(arg) => {
+          return (
+            <div style={{ padding: '4px 8px', overflow: 'hidden' }}>
+              <div style={{ fontWeight: 'bold', fontSize: '1.2em' }}>
+                {arg.event.title}
+              </div>
+              <div style={{ fontSize: '1em', opacity: 0.9 }}>
+                {arg.event.extendedProps.displayTime}
+              </div>
+            </div>
+          );
+        }}
         
         // Взаємодія
         selectable={true}

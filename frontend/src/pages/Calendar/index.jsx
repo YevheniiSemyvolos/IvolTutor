@@ -179,8 +179,8 @@ export default function Calendar() {
           while (currentStart <= repeatUntilDate && lessons.length < 40) {
             lessons.push({
               student_id: formData.student_id,
-              start_time: currentStart.toISOString().slice(0, -1), // Без 'Z'
-              end_time: currentEnd.toISOString().slice(0, -1),
+              start_time: formatLocalISO(currentStart),
+              end_time: formatLocalISO(currentEnd),
               topic: formData.topic,
               status: 'planned'
             });

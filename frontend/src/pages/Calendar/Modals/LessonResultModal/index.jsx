@@ -22,33 +22,36 @@ export default function LessonResultModal({ isOpen, onClose, onSuccess, lessonId
   };
 
   const uploadFiles = async () => {
-    if (!materialFile && !homeworkFile) {
-      setErrorMsg('Виберіть принаймні один файл');
-      return;
-    }
-
     setIsLoading(true);
     setErrorMsg(null);
 
     try {
-      const formData = new FormData();
-      if (materialFile) formData.append('files', materialFile);
-      if (homeworkFile) formData.append('files', homeworkFile);
+      let materialUrl = null;
+      let homeworkUrl = null;
 
-      // Завантажити файли
-      const uploadRes = await axios.post(`${API_URL}/upload/`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
+      // Завантажити файли, якщо вони є
+      if (materialFile || homeworkFile) {
+        const formData = new FormData();
+        if (materialFile) formData.append('files', materialFile);
+        if (homeworkFile) formData.append('files', homeworkFile);
 
-      // uploadRes.data очікується як { files: ["path1", "path2"] } або { urls: ["url1", "url2"] }
-      const fileUrls = uploadRes.data.files || uploadRes.data.urls || [];
+        const uploadRes = await axios.post(`${API_URL}/upload/`, formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
+
+        // uploadRes.data очікується як { files: ["path1", "path2"] } або { urls: ["url1", "url2"] }
+        const fileUrls = uploadRes.data.files || uploadRes.data.urls || [];
+        
+        materialUrl = materialFile ? fileUrls[0] : null;
+        homeworkUrl = homeworkFile ? fileUrls[fileUrls.length - 1] : null;
+      }
 
       // Оновити урок
       const lessonData = {
         status: 'completed',
         topic: topic,
-        material_url: materialFile ? fileUrls[0] : null,
-        homework_url: homeworkFile ? fileUrls[fileUrls.length - 1] : null
+        material_url: materialUrl,
+        homework_url: homeworkUrl
       };
 
       await axios.patch(`${API_URL}/lessons/${lessonId}`, lessonData);

@@ -155,7 +155,7 @@ export default function LessonModal({
   // Опції
   const studentOptions = students.map(s => ({
     value: s.id,
-    label: s.full_name
+    label: `${s.full_name} ${s.grade || '-'} клас`
   }));
 
   const frequencyOptions = [
@@ -189,7 +189,12 @@ export default function LessonModal({
             {lessonToEdit ? (
               // При редагуванні - показуємо ім'я студента як текст
               <div className={styles.form_value}>
-                {students.find(s => s.id === studentId)?.full_name || 'Невідомий студент'}
+                {(() => {
+                  const student = students.find(s => s.id === studentId);
+                  return student 
+                    ? `${student.full_name} ${student.grade || '-'} клас`
+                    : 'Невідомий студент';
+                })()}
               </div>
             ) : (
               // При створенні - вибір студента зі списку

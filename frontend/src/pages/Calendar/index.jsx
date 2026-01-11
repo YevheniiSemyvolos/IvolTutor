@@ -72,6 +72,7 @@ export default function Calendar() {
         const student = students.find(s => s.id === lesson.student_id);
         const studentName = student?.full_name || 'Студент';
         const grade = student?.grade || '-';
+        const telegramContact = student?.telegram_contact || null;
         
         // Форматуємо час початку та кінця
         const startTime = new Date(lesson.start_time).toLocaleTimeString('uk-UA', {
@@ -94,7 +95,7 @@ export default function Calendar() {
           borderColor: 'transparent',
           editable: lesson.status !== 'completed', // Забороняємо редагування завершених уроків
           className: lesson.status === 'completed' ? 'event-completed' : '', // Клас для завершених уроків
-          extendedProps: { ...lesson, displayTime: `${startTime} - ${endTime}` } 
+          extendedProps: { ...lesson, telegram_contact: telegramContact, displayTime: `${startTime} - ${endTime}` } 
         };
       });
 
@@ -423,6 +424,7 @@ export default function Calendar() {
         onClose={() => setIsResultModalOpen(false)}
         onSuccess={handleResultSuccess}
         lessonId={lessonForResult?.id}
+        studentTelegram={lessonForResult?.telegram_contact}
       />
 
       <PaymentModal 

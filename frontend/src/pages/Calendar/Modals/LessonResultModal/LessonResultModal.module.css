@@ -39,6 +39,39 @@
   font-size: 0.9rem;
 }
 
+.detailItem {
+  background-color: #f9fafb;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid #f3f4f6;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.detailLabel {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #9ca3af;
+  white-space: nowrap;
+}
+
+.detailValue {
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.tg_link {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.tg_link:hover {
+  text-decoration: underline;
+}
+
 .form_input {
   width: 100%;
   padding: 10px;
@@ -151,6 +184,15 @@
 :global(.dark) .form_input:focus {
   border-color: #60a5fa;
   box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+}
+
+:global(.dark) .detailItem {
+  background-color: rgba(55, 65, 81, 0.5);
+  border-color: #374151;
+}
+
+:global(.dark) .detailValue {
+  color: #f3f4f6;
 }
 
 :global(.dark) .error {

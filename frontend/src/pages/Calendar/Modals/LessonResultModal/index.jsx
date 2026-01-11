@@ -4,7 +4,7 @@ import styles from './LessonResultModal.module.css';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
-export default function LessonResultModal({ isOpen, onClose, onSuccess, lessonId }) {
+export default function LessonResultModal({ isOpen, onClose, onSuccess, lessonId, studentTelegram }) {
   const [materialFile, setMaterialFile] = useState(null);
   const [homeworkFile, setHomeworkFile] = useState(null);
   const [topic, setTopic] = useState('');
@@ -85,6 +85,22 @@ export default function LessonResultModal({ isOpen, onClose, onSuccess, lessonId
             {errorMsg}
           </div>
         )}
+
+        <div className={styles.detailItem}>
+          <span className={styles.detailLabel}>ТГ контакт</span>
+          {studentTelegram ? (
+            <a 
+              href={`https://t.me/${studentTelegram.replace('@', '')}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`${styles.detailValue} ${styles.tg_link}`}
+            >
+              {studentTelegram}
+            </a>
+          ) : (
+            <span className={styles.detailValue}>-</span>
+          )}
+        </div>
 
         <div className={styles.form_group}>
           <label className={styles.form_label}>Тема уроку</label>

@@ -1,5 +1,4 @@
 import os
-import shutil
 import uuid
 from typing import List
 from datetime import datetime
@@ -16,6 +15,8 @@ from .models import (
     Lesson, LessonCreate, LessonUpdate, 
     Transaction, Payment, PaymentCreate, generate_slug
 )
+from .services.billing import apply_status_change
+from .services.uploads import enforce_upload_constraints, save_file, validate_extension
 
 app = FastAPI(title="Tutor CRM API")
 
@@ -52,19 +53,21 @@ async def upload_file(
     if not files:
         raise HTTPException(status_code=400, detail="No files provided")
     
+    enforce_upload_constraints(files, max_files=5, max_size_mb=20)
+
+    try:
+        parsed_date = datetime.strptime(lesson_date, "%Y-%m-%d").date()
+        lesson_date = parsed_date.strftime("%Y-%m-%d")
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid lesson_date format. Use YYYY-MM-DD")
+
     uploaded_urls = []
-    
-    # Створюємо структуру папок: uploads/student_slug/lesson_date/
-    student_dir = os.path.join(UPLOAD_DIR, student_slug)
-    lesson_dir = os.path.join(student_dir, lesson_date)
-    
-    # Створюємо папки якщо не існують
-    os.makedirs(lesson_dir, exist_ok=True)
     
     # Визначаємо які типи файлів ми отримали
     file_index = 0
     for file in files:
         if file and file.filename:
+            validate_extension(file.filename)
             file_extension = os.path.splitext(file.filename)[1]
             
             # Визначаємо назву файлу
@@ -76,15 +79,12 @@ async def upload_file(
                 file_type = "ДЗ"  # Другий файл - домашнє завдання
             
             structured_filename = f"{file_type}_{lesson_date}{file_extension}"
-            file_path = os.path.join(lesson_dir, structured_filename)
             
             try:
-                with open(file_path, "wb") as buffer:
-                    shutil.copyfileobj(file.file, buffer)
-                
-                # Повертаємо відносний шлях від uploads
-                relative_path = f"/uploads/{student_slug}/{lesson_date}/{structured_filename}"
+                relative_path = save_file(UPLOAD_DIR, student_slug, lesson_date, structured_filename, file)
                 uploaded_urls.append(relative_path)
+            except HTTPException:
+                raise
             except Exception as e:
                 raise HTTPException(status_code=500, detail=f"Failed to save file: {str(e)}")
             
@@ -201,49 +201,17 @@ def update_lesson(
     
     # Отримуємо старий статус
     old_status = lesson.status
-    new_status = lesson_in.status if lesson_in.status else old_status
+    old_price = lesson.price
     
     # Оновлюємо дані уроку
-    lesson_data = lesson_in.model_dump(exclude_unset=True)
+    lesson_data = lesson_in.dict(exclude_unset=True)
     for key, value in lesson_data.items():
         setattr(lesson, key, value)
-    
-    # Логіка змін балансу
-    student = session.get(Student, lesson.student_id)
-    if student and old_status != new_status:
-        # Функція для розрахунку списаної суми залежно від статусу
-        def get_deduction_amount(status):
-            if status == 'completed':
-                return lesson.price
-            elif status == 'no_show':
-                return lesson.price * 0.5
-            else:  # planned, cancelled
-                return 0
-        
-        old_deduction = get_deduction_amount(old_status)
-        new_deduction = get_deduction_amount(new_status)
-        
-        # Розраховуємо корекцію балансу
-        balance_change = old_deduction - new_deduction
-        student.balance += balance_change
-        
-        # Створюємо транзакцію
-        if balance_change != 0:
-            comment = ""
-            if new_status == 'completed':
-                comment = f"Проведено заняття на тему: {lesson.topic or 'без назви'}"
-            elif new_status == 'no_show':
-                comment = f"Учень не прийшов (50% від ціни заняття)"
-            elif new_status == 'cancelled':
-                comment = f"Скасування заняття (повернення коштів)"
-            
-            transaction = Transaction(
-                student_id=lesson.student_id,
-                amount=-balance_change,
-                comment=comment
-            )
-            session.add(transaction)
-    
+
+    new_status = lesson.status
+
+    apply_status_change(lesson, old_status, new_status, old_price, session)
+
     session.add(lesson)
     session.commit()
     session.refresh(lesson)

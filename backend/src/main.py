@@ -222,6 +222,65 @@ def update_lesson(
     return lesson
 
 
+@app.patch("/lessons/series/{lesson_id}")
+def update_lesson_series(
+    lesson_id: uuid.UUID, 
+    lesson_in: LessonUpdate, 
+    session: Session = Depends(get_session)
+):
+    """Оновити всі заняття серії, починаючи з поточного"""
+    # Отримуємо поточний урок
+    lesson = session.get(Lesson, lesson_id)
+    if not lesson:
+        raise HTTPException(status_code=404, detail="Lesson not found")
+    
+    if not lesson.series_id:
+        raise HTTPException(status_code=400, detail="Lesson is not part of a series")
+    
+    # Отримуємо всі заняття серії, які починаються з поточного або пізніше
+    statement = select(Lesson).where(
+        Lesson.series_id == lesson.series_id,
+        Lesson.start_time >= lesson.start_time,
+        Lesson.status == 'planned'  # Оновлюємо тільки заплановані
+    )
+    lessons = session.exec(statement).all()
+    
+    # Обчислюємо різницю часу для зміщення
+    lesson_data = lesson_in.dict(exclude_unset=True)
+    
+    # Якщо змінюється час початку або кінця, обчислюємо зміщення
+    time_shift_start = None
+    time_shift_end = None
+    
+    if 'start_time' in lesson_data and lesson_data['start_time']:
+        original_start = lesson.start_time
+        new_start = lesson_data['start_time']
+        time_shift_start = new_start - original_start
+    
+    if 'end_time' in lesson_data and lesson_data['end_time']:
+        original_end = lesson.end_time
+        new_end = lesson_data['end_time']
+        time_shift_end = new_end - original_end
+    
+    updated_count = 0
+    for l in lessons:
+        # Оновлюємо час з урахуванням зміщення
+        if time_shift_start:
+            l.start_time = l.start_time + time_shift_start
+        if time_shift_end:
+            l.end_time = l.end_time + time_shift_end
+        
+        # Оновлюємо інші поля (тема)
+        if 'topic' in lesson_data:
+            l.topic = lesson_data['topic']
+        
+        session.add(l)
+        updated_count += 1
+    
+    session.commit()
+    return {"message": f"Updated {updated_count} lessons in series"}
+
+
 # --- ПЛАТЕЖИ ---
 @app.post("/payments/", response_model=Payment)
 def create_payment(payment_in: PaymentCreate, session: Session = Depends(get_session)):

@@ -6,6 +6,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import LessonModal from './Modals/LessonModal';
 import LessonResultModal from './Modals/LessonResultModal';
+import SeriesEditModal from './Modals/SeriesEditModal';
 import PaymentModal from '../Students/Modals/PaymentModal';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
@@ -30,6 +31,10 @@ export default function Calendar() {
   const [lessonForResult, setLessonForResult] = useState(null);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [selectedStudentForPayment, setSelectedStudentForPayment] = useState(null);
+  
+  // Стан для модального вікна вибору редагування серії
+  const [isSeriesModalOpen, setIsSeriesModalOpen] = useState(false);
+  const [pendingFormData, setPendingFormData] = useState(null);
 
   const calendarRef = useRef(null);
 
@@ -138,6 +143,8 @@ export default function Calendar() {
             start_time: newStart,
             end_time: newEnd
         });
+        // Оновлюємо календар для перерахунку displayTime
+        calendarRef.current?.getApi().refetchEvents();
     } catch (error) {
         console.error("Помилка оновлення часу:", error);
         info.revert(); // Повертаємо подію назад у разі помилки
@@ -149,11 +156,72 @@ export default function Calendar() {
     setEditingLesson(null);
   };
 
+  // Функція для оновлення тільки одного заняття
+  const handleSingleEdit = async () => {
+    if (!pendingFormData || !editingLesson) return;
+    
+    try {
+      const updateData = {
+        student_id: pendingFormData.student_id,
+        start_time: pendingFormData.start_time,
+        end_time: pendingFormData.end_time,
+        topic: pendingFormData.topic,
+        status: pendingFormData.status,
+        series_id: null // Від'єднуємо від серії
+      };
+      
+      await axios.patch(`${API_URL}/lessons/${editingLesson.id}`, updateData);
+      calendarRef.current?.getApi().refetchEvents();
+    } catch (error) {
+      console.error("Помилка оновлення заняття:", error);
+      setErrorMsg("Не вдалося оновити заняття.");
+    } finally {
+      setIsSeriesModalOpen(false);
+      setPendingFormData(null);
+      setIsModalOpen(false);
+      setEditingLesson(null);
+    }
+  };
+
+  // Функція для оновлення всіх наступних занять серії
+  const handleSeriesEdit = async () => {
+    if (!pendingFormData || !editingLesson) return;
+    
+    try {
+      const updateData = {
+        student_id: pendingFormData.student_id,
+        start_time: pendingFormData.start_time,
+        end_time: pendingFormData.end_time,
+        topic: pendingFormData.topic
+      };
+      
+      await axios.patch(`${API_URL}/lessons/series/${editingLesson.id}`, updateData);
+      calendarRef.current?.getApi().refetchEvents();
+    } catch (error) {
+      console.error("Помилка оновлення серії:", error);
+      setErrorMsg("Не вдалося оновити серію занять.");
+    } finally {
+      setIsSeriesModalOpen(false);
+      setPendingFormData(null);
+      setIsModalOpen(false);
+      setEditingLesson(null);
+    }
+  };
+
   // Збереження (Створення або Редагування)
   const handleSaveLesson = async (formData) => {
     try {
       if (editingLesson) {
         // Логіка РЕДАГУВАННЯ (PATCH)
+        // Перевіряємо, чи заняття є частиною серії
+        if (editingLesson.series_id) {
+          // Зберігаємо дані та показуємо модальне вікно вибору
+          setPendingFormData(formData);
+          setIsSeriesModalOpen(true);
+          return; // Виходимо, чекаємо вибору користувача
+        }
+        
+        // Звичайне оновлення для заняття без серії
         const updateData = {
             student_id: formData.student_id,
             start_time: formData.start_time,
@@ -172,6 +240,9 @@ export default function Calendar() {
           const endDate = new Date(formData.end_time);
           const repeatUntilDate = new Date(formData.repeatUntil);
           
+          // Генеруємо унікальний series_id для всіх занять серії
+          const seriesId = crypto.randomUUID();
+          
           const lessons = [];
           let currentStart = new Date(startDate);
           let currentEnd = new Date(endDate);
@@ -182,7 +253,8 @@ export default function Calendar() {
               start_time: formatLocalISO(currentStart),
               end_time: formatLocalISO(currentEnd),
               topic: formData.topic,
-              status: 'planned'
+              status: 'planned',
+              series_id: seriesId
             });
             
             // Переходимо на наступний тиждень
@@ -359,6 +431,16 @@ export default function Calendar() {
         onSuccess={handlePaymentSuccess}
         preselectedStudentId={selectedStudentForPayment}
         students={students}
+      />
+
+      <SeriesEditModal
+        isOpen={isSeriesModalOpen}
+        onClose={() => {
+          setIsSeriesModalOpen(false);
+          setPendingFormData(null);
+        }}
+        onSingleEdit={handleSingleEdit}
+        onSeriesEdit={handleSeriesEdit}
       />
     </>
   );

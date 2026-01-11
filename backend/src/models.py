@@ -51,6 +51,7 @@ class LessonBase(SQLModel):
     status: str = Field(default="planned")
     material_url: Optional[str] = None
     homework_url: Optional[str] = None
+    series_id: Optional[uuid.UUID] = None  # ID серії для щотижневих занять
 
 # Схема для створення (ціна опціональна, бо береться з профілю)
 class LessonCreate(LessonBase):

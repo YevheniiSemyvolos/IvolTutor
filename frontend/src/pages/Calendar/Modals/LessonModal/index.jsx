@@ -69,7 +69,7 @@ export default function LessonModal({
   const handleStartTimeChange = (value) => {
     setStartTime(value);
     
-    if (!lessonToEdit && value) {
+    if (value) {
       // Розбираємо час (HH:MM)
       const [hours, minutes] = value.split(':').map(Number);
       

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import shared from '../shared/Modal.module.css';
 import styles from './LessonResultModal.module.css';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
@@ -110,12 +111,12 @@ export default function LessonResultModal({ isOpen, onClose, onSuccess, lessonId
   };
 
   return (
-    <div className={styles.overlay}>
-      <div className={styles.content} onClick={(e) => e.stopPropagation()}>
-        <h2 className={styles.form_title}>Фіксація результатів уроку</h2>
+    <div className={shared.overlay}>
+      <div className={shared.modal} onClick={(e) => e.stopPropagation()}>
+        <h2 className={shared.title}>Фіксація результатів уроку</h2>
 
         {errorMsg && (
-          <div className={styles.error}>
+          <div className={shared.error}>
             {errorMsg}
           </div>
         )}
@@ -127,7 +128,7 @@ export default function LessonResultModal({ isOpen, onClose, onSuccess, lessonId
               href={`https://t.me/${studentTelegram.replace('@', '')}`}
               target="_blank"
               rel="noopener noreferrer"
-              className={`${styles.detailValue} ${styles.tg_link}`}
+              className={`${styles.detailValue} ${styles.tgLink}`}
             >
               {studentTelegram}
             </a>
@@ -136,49 +137,49 @@ export default function LessonResultModal({ isOpen, onClose, onSuccess, lessonId
           )}
         </div>
 
-        <div className={styles.form_group}>
-          <label className={styles.form_label}>Тема уроку</label>
+        <div className={shared.formGroup}>
+          <label className={shared.label}>Тема уроку</label>
           <input
             type="text"
-            className={styles.form_input}
+            className={shared.input}
             value={topic}
             onChange={(e) => setTopic(e.target.value)}
             placeholder="Наприклад: Тригонометрія"
           />
         </div>
 
-        <div className={styles.form_group}>
-          <label className={styles.form_label}>Матеріали до уроку</label>
+        <div className={shared.formGroup}>
+          <label className={shared.label}>Матеріали до уроку</label>
           <input
             type="file"
-            className={styles.form_input}
+            className={shared.input}
             onChange={handleMaterialChange}
             accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.jpg,.png"
           />
           {materialFile && (
-            <p className={styles.file_name}>✓ {materialFile.name}</p>
+            <p className={styles.fileName}>✓ {materialFile.name}</p>
           )}
         </div>
 
-        <div className={styles.form_group}>
-          <label className={styles.form_label}>Домашнє завдання</label>
+        <div className={shared.formGroup}>
+          <label className={shared.label}>Домашнє завдання</label>
           <input
             type="file"
-            className={styles.form_input}
+            className={shared.input}
             onChange={handleHomeworkChange}
             accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.jpg,.png"
           />
           {homeworkFile && (
-            <p className={styles.file_name}>✓ {homeworkFile.name}</p>
+            <p className={styles.fileName}>✓ {homeworkFile.name}</p>
           )}
-          <p className={styles.paste_hint}>Або натисніть Ctrl+V для вставки фото з буфера обміну</p>
+          <p className={styles.pasteHint}>Або натисніть Ctrl+V для вставки фото з буфера обміну</p>
         </div>
 
-        <div className={styles.btns}>
+        <div className={shared.actions}>
           <button
             type="button"
             onClick={onClose}
-            className={`${styles.btn} ${styles.btn_cancel}`}
+            className={shared.btnSecondary}
             disabled={isLoading}
           >
             Закрити
@@ -186,7 +187,7 @@ export default function LessonResultModal({ isOpen, onClose, onSuccess, lessonId
           <button
             type="button"
             onClick={uploadFiles}
-            className={`${styles.btn} ${styles.btn_save}`}
+            className={shared.btnPrimary}
             disabled={isLoading}
           >
             {isLoading ? 'Завантаження...' : 'Підтвердити'}

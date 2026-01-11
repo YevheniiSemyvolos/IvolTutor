@@ -3,7 +3,18 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import EventContent from './EventContent';
+
+function renderEventContent(eventInfo) {
+  const { displayTime } = eventInfo.event.extendedProps;
+  return (
+    <div className="fc-event-main-frame">
+      <div className="fc-event-time">{displayTime}</div>
+      <div className="fc-event-title-container">
+        <div className="fc-event-title fc-sticky">{eventInfo.event.title}</div>
+      </div>
+    </div>
+  );
+}
 
 export default function CalendarView({
   calendarRef,
@@ -41,7 +52,7 @@ export default function CalendarView({
       allDaySlot={false}
       nowIndicator
       events={eventsSource}
-      eventContent={EventContent}
+      eventContent={renderEventContent}
       selectable
       selectMirror
       select={onDateSelect}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Select from './Select'; 
+import shared from '../shared/Modal.module.css';
 import styles from './LessonModal.module.css';
 
 export default function LessonModal({ 
@@ -164,16 +165,16 @@ export default function LessonModal({
   ];
 
   return (
-    <div className={styles.overlay}>
-      <div className={styles.content} onClick={e => e.stopPropagation()}>
-        <h2 className={styles.form_title}>
+    <div className={shared.overlay}>
+      <div className={shared.modal} onClick={e => e.stopPropagation()}>
+        <h2 className={shared.title}>
           {lessonToEdit ? 'Редагувати урок' : 'Новий урок'}
         </h2>
         
         {/* Статус (Тільки при редагуванні) */}
           {lessonToEdit && (
-           <div className={styles.status_row}>
-             Статус: <span className={styles.status_bold}>{
+           <div className={styles.statusRow}>
+             Статус: <span className={styles.statusBold}>{
                lessonToEdit.status === 'completed' ? '✅ Проведено' :
                lessonToEdit.status === 'cancelled' ? '❌ Скасовано' :
                lessonToEdit.status === 'no_show' ? '😡 Не прийшов' :
@@ -184,11 +185,11 @@ export default function LessonModal({
 
         <form onSubmit={handleSubmit}>
           {/* Студент */}
-          <div className={styles.form_group}>
-            <label className={styles.form_label}>Студент</label>
+          <div className={shared.formGroup}>
+            <label className={shared.label}>Студент</label>
             {lessonToEdit ? (
               // При редагуванні - показуємо ім'я студента як текст
-              <div className={styles.form_value}>
+              <div className={styles.formValue}>
                 {(() => {
                   const student = students.find(s => s.id === studentId);
                   return student 
@@ -209,11 +210,11 @@ export default function LessonModal({
           </div>
 
           {/* Дата */}
-          <div className={styles.form_group}>
-            <label className={styles.form_label}>Дата заняття</label>
+          <div className={shared.formGroup}>
+            <label className={shared.label}>Дата заняття</label>
             <input 
               type="date" 
-              className={styles.form_input}
+              className={shared.input}
               value={date}
               onChange={(e) => setDate(e.target.value)}
               required
@@ -222,21 +223,21 @@ export default function LessonModal({
 
           {/* Час */}
           <div className={styles.row}>
-            <div className={`${styles.form_group} ${styles.flex1}`}>
-              <label className={styles.form_label}>Початок</label>
+            <div className={`${shared.formGroup} ${styles.flex1}`}>
+              <label className={shared.label}>Початок</label>
               <input 
                 type="time" 
-                className={styles.form_input}
+                className={shared.input}
                 value={startTime}
                 onChange={(e) => handleStartTimeChange(e.target.value)}
                 required
               />
             </div>
-            <div className={`${styles.form_group} ${styles.flex1}`}>
-              <label className={styles.form_label}>Кінець</label>
+            <div className={`${shared.formGroup} ${styles.flex1}`}>
+              <label className={shared.label}>Кінець</label>
               <input 
                 type="time" 
-                className={styles.form_input}
+                className={shared.input}
                 value={endTime}
                 onChange={(e) => setEndTime(e.target.value)}
                 required
@@ -247,8 +248,8 @@ export default function LessonModal({
           {/* Частота */}
           {!lessonToEdit && (
             <>
-              <div className={styles.form_group}>
-                  <label className={styles.form_label}>Частота занять</label>
+              <div className={shared.formGroup}>
+                  <label className={shared.label}>Частота занять</label>
                   <Select 
                       options={frequencyOptions}
                       value={frequency}
@@ -265,23 +266,23 @@ export default function LessonModal({
               
               {/* Дата закінчення для щотижневих занять */}
               {frequency === 'weekly' && (
-                <div className={styles.form_group}>
-                  <label className={styles.form_label}>Заповнити календар до</label>
+                <div className={shared.formGroup}>
+                  <label className={shared.label}>Заповнити календар до</label>
                   <input 
                     type="date" 
-                    className={styles.form_input}
+                    className={shared.input}
                     value={repeatUntil}
                     onChange={(e) => handleRepeatUntilChange(e.target.value)}
                     min={date}
                     required
                   />
                   {repeatUntil && date && !frequencyError && (
-                    <div className={styles.info_text}>
+                    <div className={styles.infoText}>
                       Буде створено {calculateLessonsCount(date, repeatUntil)} занять
                     </div>
                   )}
                   {frequencyError && (
-                    <div className={styles.error_text}>
+                    <div className={styles.errorText}>
                       {frequencyError}
                     </div>
                   )}
@@ -291,11 +292,11 @@ export default function LessonModal({
           )}
 
           {/* --- КНОПКИ --- */}
-          <div className={styles.btns}>
+          <div className={shared.actions}>
             <button 
               type="button" 
               onClick={onClose} 
-              className={`${styles.btn} ${styles.btn_close}`}
+              className={shared.btnSecondary}
             >
               {lessonToEdit ? 'Закрити' : 'Скасувати'}
             </button>
@@ -305,7 +306,7 @@ export default function LessonModal({
               <>
                 <button 
                   type="button" 
-                  className={`${styles.btn} ${styles.btn_cancel}`}
+                  className={shared.btnDanger}
                   onClick={() => setShowCancelConfirm(true)}
                   title="Скасувати урок"
                 >
@@ -314,7 +315,7 @@ export default function LessonModal({
                 
                 <button 
                   type="button" 
-                  className={`${styles.btn} ${styles.btn_complete}`}
+                  className={shared.btnSuccess}
                   onClick={() => {
                     onOpenResultModal(lessonToEdit);
                     onClose();
@@ -328,7 +329,7 @@ export default function LessonModal({
             
             {/* Кнопка Зберегти/Створити (приховується якщо урок проведено) */}
             {!lessonToEdit || lessonToEdit.status !== 'completed' ? (
-              <button type="submit" className={`${styles.btn} ${styles.btn_save}`}>
+              <button type="submit" className={shared.btnPrimary}>
                 {lessonToEdit ? 'Зберегти' : 'Створити'}
               </button>
             ) : null}
@@ -337,15 +338,15 @@ export default function LessonModal({
 
         {/* Confirmation Modal for Cancel */}
         {showCancelConfirm && (
-          <div className={styles.confirm_overlay} onClick={() => setShowCancelConfirm(false)}>
-            <div className={styles.confirm_content} onClick={(e) => e.stopPropagation()}>
-              <h3 className={styles.confirm_title}>Вибір дії для скасування</h3>
-              <p className={styles.confirm_text}>Виберіть причину скасування:</p>
+          <div className={styles.confirmOverlay} onClick={() => setShowCancelConfirm(false)}>
+            <div className={styles.confirmContent} onClick={(e) => e.stopPropagation()}>
+              <h3 className={styles.confirmTitle}>Вибір дії для скасування</h3>
+              <p className={styles.confirmText}>Виберіть причину скасування:</p>
               
-              <div className={styles.confirm_btns}>
+              <div className={styles.confirmBtns}>
                 <button
                   type="button"
-                  className={`${styles.btn} ${styles.btn_close}`}
+                  className={shared.btnSecondary}
                   onClick={() => setShowCancelConfirm(false)}
                 >
                   Закрити
@@ -353,7 +354,7 @@ export default function LessonModal({
 
                 <button
                   type="button"
-                  className={`${styles.btn} ${styles.btn_noshow}`}
+                  className={shared.btnWarning}
                   onClick={() => {
                     onStatusChange('no_show');
                     setShowCancelConfirm(false);
@@ -364,7 +365,7 @@ export default function LessonModal({
 
                 <button
                   type="button"
-                  className={`${styles.btn} ${styles.btn_cancel}`}
+                  className={shared.btnDanger}
                   onClick={() => {
                     onStatusChange('cancelled');
                     setShowCancelConfirm(false);

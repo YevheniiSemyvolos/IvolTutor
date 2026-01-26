@@ -1,0 +1,81 @@
+/* Специфічні стилі для SeriesEditModal */
+
+.description {
+  color: #6b7280;
+  margin-bottom: 24px;
+  text-align: center;
+  line-height: 1.5;
+  font-size: 0.95rem;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.optionButton {
+  padding: 12px 20px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.optionButton:hover {
+  background-color: #e5e7eb;
+  border-color: #9ca3af;
+}
+
+.optionButton:active {
+  background-color: #d1d5db;
+}
+
+.cancelLink {
+  width: 100%;
+  padding: 10px;
+  background: transparent;
+  border: none;
+  color: #6b7280;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.cancelLink:hover {
+  color: #374151;
+}
+
+/* --- DARK MODE --- */
+:global(.dark) .description {
+  color: #d1d5db;
+}
+
+:global(.dark) .optionButton {
+  background-color: #374151;
+  color: #f3f4f6;
+  border-color: #4b5563;
+}
+
+:global(.dark) .optionButton:hover {
+  background-color: #4b5563;
+  border-color: #6b7280;
+}
+
+:global(.dark) .optionButton:active {
+  background-color: #6b7280;
+}
+
+:global(.dark) .cancelLink {
+  color: #9ca3af;
+}
+
+:global(.dark) .cancelLink:hover {
+  color: #d1d5db;
+}

@@ -1,0 +1,454 @@
+.container {
+  padding: 2rem;
+  max-width: 64rem; /* 1024px */
+  margin: 0 auto;
+}
+
+.backBtn {
+  margin-bottom: 1.5rem;
+  color: #2563eb;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.backBtn:hover {
+  text-decoration: underline;
+}
+
+:global(.dark) .backBtn {
+  color: #60a5fa;
+}
+
+/* Картка студента */
+.card {
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  border: 1px solid #f3f4f6;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  margin-bottom: 2rem;
+  transition: background-color 0.3s;
+}
+
+.cardHeader {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .cardHeader {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.studentName {
+  font-size: 1.875rem; /* 30px */
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.parentName {
+  color: #6b7280;
+  margin-top: 0.25rem;
+}
+
+:global(.dark) .parentName {
+  color: #9ca3af;
+}
+
+/* Баланс */
+.balanceBadge {
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.75rem;
+  font-weight: 700;
+  font-size: 1.125rem;
+}
+
+.positive {
+  background-color: #f0fdf4;
+  color: #15803d;
+  border: 1px solid #dcfce7;
+}
+
+.negative {
+  background-color: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fee2e2;
+}
+
+.paymentBtn {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #dbeafe;
+  background-color: #eff6ff;
+  color: #0369a1;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.paymentBtn:hover {
+  background-color: #bfdbfe;
+  border-color: #7dd3fc;
+}
+
+:global(.dark) .paymentBtn {
+  background-color: #0c2540;
+  color: #38bdf8;
+  border-color: #065f73;
+}
+
+:global(.dark) .paymentBtn:hover {
+  background-color: #082f49;
+  border-color: #0e7490;
+}
+
+
+/* Деталі (сітка) */
+.detailsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .detailsGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.detailItem {
+  background-color: #f9fafb;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid #f3f4f6;
+}
+
+
+.detailLabel {
+  display: block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #9ca3af;
+  margin-bottom: 0.25rem;
+}
+
+.detailValue {
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.tg_link {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.tg_link:hover {
+  text-decoration: underline; /* З'являється підкреслення */
+}
+
+.commentSection {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb; /* сірий розділювач */
+}
+
+/* Таблиця */
+.sectionTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: #1f2937;
+}
+
+.tableCard {
+  background-color: white;
+  border-radius: 1rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  border: 1px solid #f3f4f6;
+  overflow: hidden;
+}
+
+.editBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #6b7280;
+  padding: 0.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.editBtn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+:global(.dark) .editBtn {
+  color: #9ca3af;
+}
+
+:global(.dark) .editBtn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.tableWrapper {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.th {
+  background-color: #f9fafb;
+  padding: 1rem;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: #6b7280;
+  letter-spacing: 0.05em;
+}
+
+.td {
+  padding: 1rem;
+  border-bottom: 1px solid #f3f4f6;
+  color: #374151;
+}
+
+.fileLink {
+  color: #3b82f6;
+  text-decoration: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.fileLink:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+.tr:hover {
+  background-color: #f9fafb;
+}
+
+/* Статуси */
+.statusBadge {
+  padding: 0.25rem 0.625rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.statusCompleted {
+  background-color: #dcfce7;
+  color: #15803d;
+}
+
+.statusCancelled {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+.statusNoshow {
+  background-color: #fed7aa;
+  color: #c2410c;
+}
+
+.statusPlanned {
+  background-color: #dbeafe;
+  color: #1d4ed8;
+}
+
+.emptyState {
+  padding: 2.5rem;
+  text-align: center;
+  color: #6b7280;
+}
+
+.commentValue {
+  font-weight: 500;
+  color: #1f2937;
+  white-space: pre-wrap;
+  margin-top: 0.25rem;
+}
+
+.dateMain {
+  font-weight: 500;
+}
+
+.dateTime {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.paymentAmount {
+  color: #10b981;
+  font-weight: 500;
+}
+
+.loadMoreWrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+
+
+
+:global(.dark) .card {
+  background-color: #1f2937;
+  border-color: #374151;
+}
+
+:global(.dark) .studentName {
+  color: white;
+}
+
+:global(.dark) .positive {
+  background-color: rgba(21, 128, 61, 0.2);
+  color: #4ade80;
+  border-color: rgba(21, 128, 61, 0.5);
+}
+
+:global(.dark) .negative {
+  background-color: rgba(185, 28, 28, 0.2);
+  color: #f87171;
+  border-color: rgba(185, 28, 28, 0.5);
+}
+
+:global(.dark) .detailItem {
+  background-color: rgba(55, 65, 81, 0.5);
+  border-color: #374151;
+}
+
+:global(.dark) .detailValue {
+  color: #f3f4f6;
+}
+
+:global(.dark) .commentSection {
+  border-color: #374151; 
+}
+
+
+:global(.dark) .sectionTitle {
+  color: white;
+}
+
+:global(.dark) .tableCard {
+  background-color: #1f2937;
+  border-color: #374151;
+}
+
+:global(.dark) .th {
+  background-color: rgba(55, 65, 81, 0.5);
+  color: #9ca3af;
+}
+
+:global(.dark) .td {
+  border-bottom-color: #374151;
+  color: #d1d5db;
+}
+
+:global(.dark) .fileLink {
+  color: #60a5fa;
+}
+
+:global(.dark) .fileLink:hover {
+  color: #93c5fd;
+}
+
+:global(.dark) .tr:hover {
+  background-color: rgba(55, 65, 81, 0.5);
+}
+
+:global(.dark) .statusCompleted {
+  background-color: rgba(21, 128, 61, 0.3);
+  color: #4ade80;
+}
+
+:global(.dark) .statusCancelled {
+  background-color: rgba(185, 28, 28, 0.3);
+  color: #f87171;
+}
+
+:global(.dark) .statusNoshow {
+  background-color: rgba(194, 65, 12, 0.3);
+  color: #fdba74;
+}
+
+:global(.dark) .statusPlanned {
+  background-color: rgba(29, 78, 216, 0.3);
+  color: #60a5fa;
+}
+
+:global(.dark) .emptyState {
+  color: #9ca3af;
+}
+
+:global(.dark) .commentValue {
+  color: #f3f4f6;
+}
+
+:global(.dark) .dateTime {
+  color: #6b7280;
+}
+
+:global(.dark) .paymentAmount {
+  color: #34d399;
+}
+
+.loadMoreBtn {
+  margin-bottom: 1rem;
+  padding: 0.75rem 1.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.loadMoreBtn:hover:not(:disabled) {
+  background-color: #e5e7eb;
+  border-color: #9ca3af;
+}
+
+.loadMoreBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+:global(.dark) .loadMoreBtn {
+  background-color: #374151;
+  color: #d1d5db;
+  border-color: #4b5563;
+}
+
+:global(.dark) .loadMoreBtn:hover:not(:disabled) {
+  background-color: #4b5563;
+  border-color: #6b7280;
+}

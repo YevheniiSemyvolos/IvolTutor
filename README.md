@@ -1,119 +1,186 @@
-# !!!Щоб зайти на сайт:
-# Source Control -> Pull для синхронізації
-# docker compose up --build ввести в термінал
-# localhost:5173 в браузері
+# 📚 IvolTutor - Система управління репетиторством
 
+Веб-додаток для управління учнями, розкладом занять та обліком оплат для репетиторів.
 
-# BACKEND 
-# = серверна, невидима для користувача частина сайту
-# Відповідає за обробку запитів, роботу з базою даних, логіку додатку...
+## 🚀 Швидкий старт
 
-# Файли у папці - separation of concerns (SoC), "розділення обов'язків"
+**Запуск проєкту:**
+```bash
+cd C:\MyFolder\IvolTutor
+docker compose down
+docker compose up --build
+```
 
-# main.py
-#     Створені обʼєкту програми
-#     Прописані шляхи (ендпоінти)
+- **Frontend**: http://localhost:5173
+- **Backend API**: http://localhost:8000
+- **API Документація**: http://localhost:8000/docs
 
-# # backend/src/main.py
-# from fastapi import FastAPI, Depends, HTTPException
-#     FastAPI - основний клас для створення веб-додатку
-створює сайт: потрібно запустити сервер і зайти на http://localhost:8000/docs
-#     Depends - впровадження залежностей
-# from fastapi.middleware.cors import CORSMiddleware
-# from sqlmodel import Session, select
-# from typing import List
-# from datetime import datetime
+**Детальніше:** [Швидкий старт](docs/QUICK_START.md) | [Повна інструкція](docs/GUIDE.md)
 
-# from .database import init_db, get_session
-# from .models import Student, Lesson
+## 📋 Основні можливості
 
-# app = FastAPI(title="Tutor CRM API")
+- 🔐 **Автентифікація** - безпечний вхід з JWT токенами
+- 👥 **Управління учнями** - профілі, контакти, примітки
+- 📅 **Календар занять** - розклад, серії занять, результати
+- 💰 **Облік платежів** - історія оплат, баланс
+- 📊 **Статистика** - відвідуваність, фінанси
+- 🎨 **Темна/світла тема** - налаштування інтерфейсу
 
-# # --- Налаштування CORS (Щоб React бачив Python) ---
-# origins = [
-#     "http://localhost:5173",  # Порт Vite (Frontend)
-#     "http://127.0.0.1:5173",
-# ]
+## 🏗️ Архітектура проєкту
 
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=origins,
-#     allow_credentials=True,
-#     allow_methods=["*"],
-#     allow_headers=["*"],
-# )
+```
+IvolTutor/
+├── backend/          # FastAPI сервер
+│   ├── src/
+│   │   ├── main.py           # Основний файл додатку
+│   │   ├── models.py         # Моделі БД (SQLAlchemy)
+│   │   ├── database.py       # Конфігурація БД
+│   │   └── services/         # Бізнес-логіка
+│   │       ├── auth.py       # Автентифікація
+│   │       ├── billing.py    # Оплати
+│   │       └── uploads.py    # Завантаження файлів
+│   └── requirements.txt
+│
+├── frontend/         # React + Vite
+│   ├── src/
+│   │   ├── App.jsx           # Головний компонент
+│   │   ├── contexts/         # React Context (Auth)
+│   │   ├── hooks/            # Custom hooks
+│   │   ├── components/       # Компоненти (Navbar)
+│   │   └── pages/            # Сторінки
+│   │       ├── Welcome/      # Login/Signup
+│   │       ├── Calendar/     # Календар занять
+│   │       ├── Students/     # Управління учнями
+│   │       └── Help/         # Довідка
+│   └── package.json
+│
+├── docs/             # Документація
+└── docker-compose.yml
+```
 
-# # --- Подія запуску ---
-# @app.on_event("startup")
-# def on_startup():
-#     init_db()  # Створити таблиці в БД автоматично
+Детальніше про архітектуру: [ARCHITECTURE.md](docs/ARCHITECTURE.md)
 
-# # --- Базові Ендпоінти (Приклади) ---
+## 📚 Документація
 
-# @app.get("/")
-# def read_root():
-#     return {"message": "Tutor CRM API is running!"}
+### 🚀 Швидкий старт
+- [Швидкий старт](docs/QUICK_START.md) - команди для миттєвого запуску
+- [Повна інструкція](docs/GUIDE.md) - детальний гайд з тестуванням та вирішенням проблем
 
-# # Отримати всіх учнів
-# @app.get("/students/", response_model=List[Student])
-# def read_students(session: Session = Depends(get_session)):
-#     students = session.exec(select(Student)).all()
-#     return students
+### 📖 Для розробників
+- [Архітектура](docs/ARCHITECTURE.md) - структура та дизайн проєкту
+- [Історія змін](docs/CHANGELOG.md) - що було реалізовано
+- [Чек-лист](docs/CHECKLIST.md) - перевірка готовності проєкту
 
-# # Створити учня
-# @app.post("/students/", response_model=Student)
-# def create_student(student: Student, session: Session = Depends(get_session)):
-#     session.add(student)
-#     session.commit()
-#     session.refresh(student)
-#     return student
+### 🔌 API та інтеграції
+- [Backend API](backend/AUTH_API.md) - документація всіх endpoints
+- [Frontend автентифікація](frontend/AUTHENTICATION.md) - використання AuthContext
 
+## 🛠️ Технології
 
-# # 1. Отримати список уроків (з фільтром по датах)
-# @app.get("/lessons/", response_model=List[Lesson])
-# def get_lessons(
-#     start: datetime, 
-#     end: datetime, 
-#     session: Session = Depends(get_session)
-# ):
-#     statement = select(Lesson).where(
-#         Lesson.start_time >= start,
-#         Lesson.start_time <= end
-#     )
-#     results = session.exec(statement).all()
-#     return results
+### Backend
+- **FastAPI** - сучасний Python веб-фреймворк
+- **SQLAlchemy** - ORM для роботи з БД
+- **SQLite** - база даних
+- **JWT** - токени автентифікації
+- **Bcrypt** - хешування паролів
+- **Python 3.x**
 
-# # 2. Створити новий урок
-# @app.post("/lessons/", response_model=Lesson)
-# def create_lesson(lesson: Lesson, session: Session = Depends(get_session)):
-#     # Перевіряємо, чи існує студент
-#     student = session.get(Student, lesson.student_id)
-#     if not student:
-#         raise HTTPException(status_code=404, detail="Student not found")
-        
-#     session.add(lesson)
-#     session.commit()
-#     session.refresh(lesson)
-#     return lesson
+### Frontend
+- **React 18** - UI бібліотека
+- **Vite** - швидкий збірник
+- **CSS Modules** - стилізація
+- **Axios** - HTTP клієнт
+- **React Router** - маршрутизація
 
-# # 3. Перенести урок (Drag-and-Drop)
-# @app.patch("/lessons/{lesson_id}", response_model=Lesson)
-# def update_lesson_date(
-#     lesson_id: str, 
-#     lesson_data: dict, # Отримуємо тільки те, що змінилося (start/end)
-#     session: Session = Depends(get_session)
-# ):
-#     lesson = session.get(Lesson, lesson_id)
-#     if not lesson:
-#         raise HTTPException(status_code=404, detail="Lesson not found")
-    
-#     # Оновлюємо поля
-#     if "start_time" in lesson_data:
-#         lesson.start_time = datetime.fromisoformat(lesson_data["start_time"].replace("Z", "+00:00"))
-#     if "end_time" in lesson_data:
-#         lesson.end_time = datetime.fromisoformat(lesson_data["end_time"].replace("Z", "+00:00"))
-        
-#     session.add(lesson)
-#     session.commit()
-#     session.refresh(lesson)
-#     return lesson
+### DevOps
+- **Docker** - контейнеризація
+- **Docker Compose** - оркестрація
+
+## 🔧 Налаштування середовища
+
+### Backend Environment
+Створіть `.env` файл в папці `backend/`:
+```env
+SECRET_KEY=your-secret-key-here-change-in-production
+DATABASE_URL=sqlite:///./ivol_tutor.db
+```
+
+### Frontend Environment
+Створіть `.env` файл в папці `frontend/`:
+```env
+VITE_API_URL=http://localhost:8000
+```
+
+## 📝 Основні команди
+
+### Запуск з Docker
+```bash
+# Запуск всіх сервісів
+docker-compose up --build
+
+# Запуск в фоновому режимі
+docker-compose up -d
+
+# Зупинка
+docker-compose down
+
+# Переглянути логи
+docker-compose logs -f
+```
+
+### Локальна розробка (без Docker)
+
+**Backend:**
+```bash
+cd backend
+pip install -r requirements.txt
+uvicorn src.main:app --reload --port 8000
+```
+
+**Frontend:**
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+## 🧪 Тестування
+
+Після запуску перевірте:
+1. ✅ Реєстрація нового користувача
+2. ✅ Вхід в систему
+3. ✅ Створення учня
+4. ✅ Додавання заняття в календар
+5. ✅ Додавання оплати
+
+**Детальніше:** [Тестування в GUIDE.md](docs/GUIDE.md#тестування-автентифікації)
+
+## 🤝 Розробка
+
+### Структура гілок
+- `main` - стабільна версія
+- `develop` - розробка нових фічей
+
+### Contribution
+1. Створіть нову гілку від `develop`
+2. Зробіть зміни
+3. Створіть Pull Request
+4. Дочекайтесь code review
+
+## 📄 Ліцензія
+
+Дивіться файл [LICENSE](LICENSE)
+
+## 📞 Підтримка
+
+Якщо виникли питання:
+1. Перегляньте [Повну інструкцію](docs/GUIDE.md)
+2. Перевірте [розділ "Вирішення проблем"](docs/GUIDE.md#вирішення-проблем)
+3. Перегляньте [Чек-лист](docs/CHECKLIST.md)
+4. Створіть новий Issue з детальним описом проблеми
+
+---
+
+**Статус проєкту:** ✅ Готовий до використання  
+**Остання оновлення:** Січень 2026  
+**Версія:** 1.0.0

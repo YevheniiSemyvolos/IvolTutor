@@ -1,0 +1,332 @@
+/* Спільні стилі для модальних вікон Calendar */
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background-color: white;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  width: 470px;
+  max-width: 90%;
+  position: relative;
+}
+
+.modalNarrow {
+  composes: modal;
+  width: 420px;
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 16px;
+  color: #111827;
+}
+
+.formGroup {
+  margin-bottom: 16px;
+}
+
+.label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #374151;
+  font-size: 0.9rem;
+}
+
+.input,
+.select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #D1D5DB;
+  border-radius: 6px;
+  font-size: 1rem;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.input:focus,
+.select:focus {
+  border-color: #3B82F6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.input::-webkit-outer-spin-button,
+.input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 10px center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+}
+
+.select:focus {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 12l4-4 4 4'/%3e%3c/svg%3e");
+}
+
+.error {
+  background-color: #FEE2E2;
+  color: #B91C1C;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  font-size: 0.9rem;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.btn {
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Кнопка закрити/скасувати (сіра) */
+.btnSecondary {
+  composes: btn;
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  color: #4b5563;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.btnSecondary:hover:not(:disabled) {
+  background-color: #f9fafb;
+  border-color: #d1d5db;
+  color: #111827;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.btnSecondary:active:not(:disabled) {
+  background-color: #f3f4f6;
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Кнопка зберегти (синя) */
+.btnPrimary {
+  composes: btn;
+  background-color: #2563EB;
+  color: white;
+}
+
+.btnPrimary:hover:not(:disabled) {
+  background-color: #1D4ED8;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.btnPrimary:active:not(:disabled) {
+  background-color: #1E40AF;
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Кнопка скасувати урок (червона) */
+.btnDanger {
+  composes: btn;
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+.btnDanger:hover:not(:disabled) {
+  background-color: #fecaca;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(185, 28, 28, 0.2);
+}
+
+.btnDanger:active:not(:disabled) {
+  background-color: #fca5a5;
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Кнопка не прийшов (помаранчева) */
+.btnWarning {
+  composes: btn;
+  background-color: #ffedd5;
+  color: #c2410c;
+}
+
+.btnWarning:hover:not(:disabled) {
+  background-color: #fed7aa;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(194, 65, 12, 0.2);
+}
+
+.btnWarning:active:not(:disabled) {
+  background-color: #fdba74;
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Кнопка проведено (зелена) */
+.btnSuccess {
+  composes: btn;
+  background-color: #d1fae5;
+  color: #047857;
+}
+
+.btnSuccess:hover:not(:disabled) {
+  background-color: #a7f3d0;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(4, 120, 87, 0.2);
+}
+
+.btnSuccess:active:not(:disabled) {
+  background-color: #6ee7b7;
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* --- DARK MODE --- */
+:global(.dark) .modal,
+:global(.dark) .modalNarrow {
+  background-color: #1f2937;
+  color: #f3f4f6;
+  border: 1px solid #374151;
+}
+
+:global(.dark) .title {
+  color: #f3f4f6;
+}
+
+:global(.dark) .label {
+  color: #d1d5db;
+}
+
+:global(.dark) .input,
+:global(.dark) .select {
+  background-color: #374151;
+  border-color: #4b5563;
+  color: white;
+}
+
+:global(.dark) .input:focus,
+:global(.dark) .select:focus {
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+}
+
+:global(.dark) .select {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+}
+
+:global(.dark) .select:focus {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 12l4-4 4 4'/%3e%3c/svg%3e");
+}
+
+:global(.dark) .input::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
+}
+
+:global(.dark) .error {
+  background-color: #450a0a;
+  color: #fca5a5;
+}
+
+:global(.dark) .btnSecondary {
+  background-color: transparent;
+  border: 1px solid #4b5563;
+  color: #e5e7eb;
+  box-shadow: none;
+}
+
+:global(.dark) .btnSecondary:hover:not(:disabled) {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-color: #9ca3af;
+  color: white;
+}
+
+:global(.dark) .btnSecondary:active:not(:disabled) {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+:global(.dark) .btnPrimary {
+  background-color: #3b82f6;
+}
+
+:global(.dark) .btnPrimary:hover:not(:disabled) {
+  background-color: #2563eb;
+}
+
+:global(.dark) .btnPrimary:active:not(:disabled) {
+  background-color: #1D4ED8;
+}
+
+:global(.dark) .btnDanger {
+  background-color: #450a0a;
+  color: #fca5a5;
+}
+
+:global(.dark) .btnDanger:hover:not(:disabled) {
+  background-color: #551313;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+}
+
+:global(.dark) .btnDanger:active:not(:disabled) {
+  background-color: #380808;
+}
+
+:global(.dark) .btnWarning {
+  background-color: #431407;
+  color: #fdba74;
+}
+
+:global(.dark) .btnWarning:hover:not(:disabled) {
+  background-color: #5c1c0a;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+}
+
+:global(.dark) .btnWarning:active:not(:disabled) {
+  background-color: #331005;
+}
+
+:global(.dark) .btnSuccess {
+  background-color: #064e3b;
+  color: #a7f3d0;
+}
+
+:global(.dark) .btnSuccess:hover:not(:disabled) {
+  background-color: #0d5e47;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+}
+
+:global(.dark) .btnSuccess:active:not(:disabled) {
+  background-color: #043f34;
+}

@@ -61,11 +61,11 @@ export default function Select({ options, value, onChange, placeholder }) {
             </div>
           ))}
           {/* Якщо список порожній */}
-          {options.length === 0 && (
-             <div className={styles.option} style={{cursor: 'default', color: '#9ca3af'}}>
-                Список порожній
+           {options.length === 0 && (
+             <div className={`${styles.option} ${styles.empty}`}>
+               Список порожній
              </div>
-          )}
+           )}
         </div>
       )}
     </div>

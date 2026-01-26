@@ -1,0 +1,62 @@
+/* Специфічні стилі для LessonResultModal */
+
+.detailItem {
+  background-color: #f9fafb;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid #f3f4f6;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.detailLabel {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #9ca3af;
+  white-space: nowrap;
+}
+
+.detailValue {
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.tgLink {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.tgLink:hover {
+  text-decoration: underline;
+}
+
+.fileName {
+  margin-top: 6px;
+  font-size: 0.85rem;
+  color: #10B981;
+  font-weight: 500;
+}
+
+.pasteHint {
+  margin-top: 6px;
+  font-size: 0.8rem;
+  color: #6b7280;
+  font-style: italic;
+}
+
+/* --- DARK MODE --- */
+:global(.dark) .detailItem {
+  background-color: rgba(55, 65, 81, 0.5);
+  border-color: #374151;
+}
+
+:global(.dark) .detailValue {
+  color: #f3f4f6;
+}
+
+:global(.dark) .pasteHint {
+  color: #9ca3af;
+}

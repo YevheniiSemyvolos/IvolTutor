@@ -4,3 +4,6 @@ sqlmodel
 psycopg2-binary
 python-multipart
 aiofiles
+python-jose[cryptography]
+passlib[argon2]
+python-dateutil

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import styles from './Navbar.module.css';
+import { useAuth } from '../../contexts/AuthContext';
 
 import ThemeToggle from './ThemeToggle';
 import HamburgerButton from './HamburgerButton';
@@ -7,15 +8,20 @@ import SidebarMenu from './SidebarMenu';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [showHelp, setShowHelp] = useState(false); // !!! 2. Стан для відображення вікна допомоги
+  const [showAccountMenu, setShowAccountMenu] = useState(false);
+  const { user, logout } = useAuth();
+  
+  const closeMenu = () => setIsMenuOpen(false);
 
-  // Функція для відкриття допомоги та закриття меню
-  const handleOpenHelp = () => {
-    setShowHelp(true);
-    setIsMenuOpen(false); // Закриваємо меню
+  const handleLogout = () => {
+    logout();
+    setShowAccountMenu(false);
   };
 
-  const closeMenu = () => setIsMenuOpen(false);
+  const getInitial = () => {
+    if (!user?.name) return 'A';
+    return user.name.charAt(0).toUpperCase();
+  };
 
   return (
     <>
@@ -32,12 +38,34 @@ export default function Navbar() {
         {/* Права частина */}
         <div className={styles.right}>
           <ThemeToggle />
-          <button type="button" className={styles.account_button} aria-label="Account menu">
-            <span className={styles.account_initial}>A</span>
-          </button>
+          <div className={styles.accountContainer}>
+            <button
+              type="button"
+              className={styles.account_button}
+              aria-label="Account menu"
+              onClick={() => setShowAccountMenu(!showAccountMenu)}
+            >
+              <span className={styles.account_initial}>{getInitial()}</span>
+            </button>
+            
+            {showAccountMenu && (
+              <div className={styles.accountMenu}>
+                <div className={styles.accountMenuHeader}>
+                  {user?.name && <div className={styles.userName}>{user.name}</div>}
+                  {user?.email && <div className={styles.userEmail}>{user.email}</div>}
+                </div>
+                <button
+                  className={styles.logoutButton}
+                  onClick={handleLogout}
+                >
+                  Вихід
+                </button>
+              </div>
+            )}
+          </div>
         </div>
 
-        <SidebarMenu isOpen={isMenuOpen} onOpenHelp={handleOpenHelp} onClose={closeMenu}/>
+        <SidebarMenu isOpen={isMenuOpen} onClose={closeMenu}/>
       </header>
     </>
   );

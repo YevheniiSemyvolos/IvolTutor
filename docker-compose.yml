@@ -21,6 +21,7 @@ services:
       - "8000:8000"
     environment:
       - DATABASE_URL=postgresql://user:password@db:5432/tutor_db
+      - SECRET_KEY=your-secret-key-change-in-production-minimum-32-characters-long-string-here
     depends_on:
       - db
 

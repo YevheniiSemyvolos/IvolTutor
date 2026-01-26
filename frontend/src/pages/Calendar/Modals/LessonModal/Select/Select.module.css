@@ -78,10 +78,24 @@
   font-weight: 500;
 }
 
+/* Порожній список */
+.empty {
+  cursor: default;
+  color: #9ca3af;
+}
+
 /* Placeholder (коли нічого не вибрано) */
 .placeholder {
   color: #9ca3af;
 }
+
+/* Анімація появи */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+
 
 /* --- DARK MODE --- */
 :global(.dark) .trigger {
@@ -117,10 +131,4 @@
 
 :global(.dark) .arrow {
   color: #9ca3af;
-}
-
-/* Анімація появи */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-5px); }
-  to { opacity: 1; transform: translateY(0); }
 }

@@ -47,7 +47,7 @@ function Welcome() {
         }
       }
     } catch (err) {
-      setValidationError('Невідома помилка');
+      setValidationError('Помилка при вході/реєстрації:');
     }
   };
 

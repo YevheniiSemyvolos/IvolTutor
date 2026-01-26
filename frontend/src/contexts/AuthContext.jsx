@@ -32,7 +32,8 @@ apiClient.interceptors.response.use(
       // Токен невалідний або закінчився
       localStorage.removeItem('access_token');
       localStorage.removeItem('user');
-      window.location.href = '/';
+      // Не перезавантажуємо сайт, щоб не очищалась консоль
+      // window.location.href = '/';
     }
     return Promise.reject(error);
   }
@@ -95,10 +96,14 @@ export function AuthProvider({ children }) {
       setError(null);
       setLoading(true);
 
+      console.log('Спроба входу з email:', email);
+
       const response = await apiClient.post('/auth/login', {
         email,
         password,
       });
+
+      console.log('Відповідь від сервера:', response.data);
 
       const { access_token } = response.data;
       
@@ -109,12 +114,16 @@ export function AuthProvider({ children }) {
       // Отримуємо дані про користувача з новим токеном
       const userResponse = await apiClient.get('/auth/me');
 
+      console.log('Дані користувача:', userResponse.data);
+
       const userData = userResponse.data;
       localStorage.setItem('user', JSON.stringify(userData));
       setUser(userData);
 
+      console.log('Вхід успішний');
       return true;
     } catch (err) {
+      console.error('Помилка входу:', err);
       const errorMessage = err.response?.data?.detail || 'Помилка входу';
       setError(errorMessage);
       return false;

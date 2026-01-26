@@ -10,10 +10,10 @@ import StudentsPage from './pages/Students';
 import StudentProfile from './pages/Students/Profile';
 
 function App() {
-  const { isAuthenticated, loading } = useAuth();
+  const { isAuthenticated, initializing } = useAuth();
 
   // Показуємо loading state під час ініціалізації
-  if (loading) {
+  if (initializing) {
     return (
       <div style={{
         display: 'flex',

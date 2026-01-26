@@ -42,7 +42,8 @@ apiClient.interceptors.response.use(
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [initializing, setInitializing] = useState(true);
+  const [authLoading, setAuthLoading] = useState(false);
   const [error, setError] = useState(null);
 
   // Ініціалізація: перевіряємо, чи є токен в localStorage
@@ -54,13 +55,13 @@ export function AuthProvider({ children }) {
       setToken(storedToken);
       setUser(JSON.parse(storedUser));
     }
-    setLoading(false);
+    setInitializing(false);
   }, []);
 
   const signup = async (email, password, name) => {
     try {
       setError(null);
-      setLoading(true);
+      setAuthLoading(true);
       
       const response = await apiClient.post('/auth/signup', {
         email,
@@ -87,14 +88,14 @@ export function AuthProvider({ children }) {
       setError(errorMessage);
       return false;
     } finally {
-      setLoading(false);
+      setAuthLoading(false);
     }
   };
 
   const login = async (email, password) => {
     try {
       setError(null);
-      setLoading(true);
+      setAuthLoading(true);
 
       console.log('Спроба входу з email:', email);
 
@@ -128,7 +129,7 @@ export function AuthProvider({ children }) {
       setError(errorMessage);
       return false;
     } finally {
-      setLoading(false);
+      setAuthLoading(false);
     }
   };
 
@@ -142,7 +143,10 @@ export function AuthProvider({ children }) {
   const value = {
     user,
     token,
-    loading,
+    // loading лишаємо для сумісності: означає стан ініціалізації контексту
+    loading: initializing,
+    initializing,
+    authLoading,
     error,
     isAuthenticated: !!token,
     signup,

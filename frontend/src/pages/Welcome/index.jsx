@@ -4,6 +4,40 @@ import { useAuth } from '../../contexts/AuthContext';
 import ThemeToggle from '../../components/Navbar/ThemeToggle';
 import styles from './Welcome.module.css';
 
+function EyeIcon({ open }) {
+  return (
+    <svg
+      className={styles.eyeIcon}
+      viewBox="0 0 24 24"
+      role="img"
+      aria-hidden="true"
+    >
+      <path
+        d="M2 12c2.2-4.2 6-7 10-7s7.8 2.8 10 7c-2.2 4.2-6 7-10 7S4.2 16.2 2 12z"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      {open ? (
+        <>
+          <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" strokeWidth="1.5" />
+        </>
+      ) : (
+        <>
+          <path
+            d="M5 5l14 14"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          />
+        </>
+      )}
+    </svg>
+  );
+}
+
 function Welcome() {
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
@@ -12,13 +46,14 @@ function Welcome() {
     name: '',
     confirmPassword: ''
   });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [validationError, setValidationError] = useState('');
-  const { login, signup, error, loading } = useAuth();
+  const { login, signup, error, authLoading } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setValidationError('');
 
     try {
       if (isLogin) {
@@ -67,6 +102,8 @@ function Welcome() {
       name: '',
       confirmPassword: ''
     });
+    setShowPassword(false);
+    setShowConfirmPassword(false);
     setValidationError('');
   };
 
@@ -151,16 +188,26 @@ function Welcome() {
               <label htmlFor="password" className={styles.label}>
                 Пароль
               </label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                className={styles.input}
-                placeholder="••••••••"
-                required
-              />
+              <div className={styles.passwordWrapper}>
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  id="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className={`${styles.input} ${styles.passwordInput}`}
+                  placeholder="••••••••"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className={styles.passwordToggle}
+                  aria-label={showPassword ? 'Сховати пароль' : 'Показати пароль'}
+                >
+                  <EyeIcon open={showPassword} />
+                </button>
+              </div>
             </div>
 
             {!isLogin && (
@@ -168,21 +215,31 @@ function Welcome() {
                 <label htmlFor="confirmPassword" className={styles.label}>
                   Підтвердіть пароль
                 </label>
-                <input
-                  type="password"
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  className={styles.input}
-                  placeholder="••••••••"
-                  required
-                />
+                <div className={styles.passwordWrapper}>
+                  <input
+                    type={showConfirmPassword ? 'text' : 'password'}
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    className={`${styles.input} ${styles.passwordInput}`}
+                    placeholder="••••••••"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword((prev) => !prev)}
+                    className={styles.passwordToggle}
+                    aria-label={showConfirmPassword ? 'Сховати підтвердження пароля' : 'Показати підтвердження пароля'}
+                  >
+                    <EyeIcon open={showConfirmPassword} />
+                  </button>
+                </div>
               </div>
             )}
 
-            <button type="submit" className={styles.submitButton} disabled={loading}>
-              {loading ? 'Завантаження...' : (isLogin ? 'Увійти' : 'Зареєструватися')}
+            <button type="submit" className={styles.submitButton} disabled={authLoading}>
+              {authLoading ? 'Завантаження...' : (isLogin ? 'Увійти' : 'Зареєструватися')}
             </button>
           </form>
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { useAuth } from '../../../contexts/AuthContext';
 import styles from './Profile.module.css';
 import StudentModal from '../Modals/StudentModal';
 import PaymentModal from '../Modals/PaymentModal';
@@ -24,6 +24,7 @@ const getChargedPrice = (lesson) => {
 export default function StudentProfile() {
   const { slug } = useParams();
   const navigate = useNavigate();
+  const { apiClient } = useAuth();
   const [student, setStudent] = useState(null);
   const [lessons, setLessons] = useState([]);
   const [payments, setPayments] = useState([]);
@@ -44,10 +45,10 @@ export default function StudentProfile() {
     else setLoadingMore(true);
 
     try {
-      const resStudent = await axios.get(`${API_URL}/students/${slug}`);
+      const resStudent = await apiClient.get(`/students/${slug}`);
       if (isInitialLoad) setStudent(resStudent.data);
 
-      const resLessons = await axios.get(`${API_URL}/lessons/`, {
+      const resLessons = await apiClient.get('/lessons/', {
         params: {
           start: '2023-01-01T00:00:00',
           end: '2028-01-01T00:00:00',
@@ -62,7 +63,7 @@ export default function StudentProfile() {
         setLessons(resLessons.data);
         
         // Завантажуємо платежі тільки при першому завантаженні
-        const resPayments = await axios.get(`${API_URL}/payments/student/${resStudent.data.id}`, {
+        const resPayments = await apiClient.get(`/payments/student/${resStudent.data.id}`, {
           params: {
             skip: 0,
             limit: 3
@@ -90,7 +91,7 @@ export default function StudentProfile() {
   const fetchMorePayments = async () => {
     setLoadingMorePayments(true);
     try {
-      const resPayments = await axios.get(`${API_URL}/payments/student/${student.id}`, {
+      const resPayments = await apiClient.get(`/payments/student/${student.id}`, {
         params: {
           skip: paymentOffset,
           limit: 3
@@ -108,7 +109,7 @@ export default function StudentProfile() {
 
   useEffect(() => {
     fetchData(0);
-  }, [slug]);
+  }, [slug, apiClient]);
 
   // Функція для завантаження ще 5 занять
   const handleLoadMore = () => {
@@ -118,7 +119,7 @@ export default function StudentProfile() {
   // Обробка збереження змін
   const handleUpdateStudent = async (formData) => {
     try {
-      await axios.patch(`${API_URL}/students/${student.id}`, formData);
+      await apiClient.patch(`/students/${student.id}`, formData);
       setIsEditModalOpen(false);
       fetchData(); // Оновлюємо дані на сторінці
     } catch (e) {
@@ -130,11 +131,11 @@ export default function StudentProfile() {
   // Обробка успішного внесення платежу
   const handlePaymentSuccess = async () => {
     // Оновлюємо студента для актуального балансу
-    const resStudent = await axios.get(`${API_URL}/students/${slug}`);
+    const resStudent = await apiClient.get(`/students/${slug}`);
     setStudent(resStudent.data);
     
     // Перезавантажуємо платежі з пагінацією (останні 3)
-    const resPayments = await axios.get(`${API_URL}/payments/student/${resStudent.data.id}`, {
+    const resPayments = await apiClient.get(`/payments/student/${resStudent.data.id}`, {
       params: {
         skip: 0,
         limit: 3

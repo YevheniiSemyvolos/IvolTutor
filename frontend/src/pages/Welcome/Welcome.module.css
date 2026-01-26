@@ -115,6 +115,16 @@
   font-size: 0.875rem;
 }
 
+.errorMessageInline {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #c33;
+  font-size: 0.9rem;
+  margin-top: -0.25rem;
+  margin-bottom: 0.75rem;
+}
+
 .form {
   display: flex;
   flex-direction: column;

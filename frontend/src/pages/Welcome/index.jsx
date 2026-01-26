@@ -2,41 +2,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import ThemeToggle from '../../components/Navbar/ThemeToggle';
+import EyeIcon from '../../components/icons/EyeIcon';
 import styles from './Welcome.module.css';
-
-function EyeIcon({ open }) {
-  return (
-    <svg
-      className={styles.eyeIcon}
-      viewBox="0 0 24 24"
-      role="img"
-      aria-hidden="true"
-    >
-      <path
-        d="M2 12c2.2-4.2 6-7 10-7s7.8 2.8 10 7c-2.2 4.2-6 7-10 7S4.2 16.2 2 12z"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      {open ? (
-        <>
-          <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" strokeWidth="1.5" />
-        </>
-      ) : (
-        <>
-          <path
-            d="M5 5l14 14"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-          />
-        </>
-      )}
-    </svg>
-  );
-}
 
 function Welcome() {
   const [isLogin, setIsLogin] = useState(true);
@@ -143,12 +110,6 @@ function Welcome() {
             {isLogin ? 'Вхід' : 'Реєстрація'}
           </h2>
           
-          {displayError && (
-            <div className={styles.errorMessage}>
-              {displayError}
-            </div>
-          )}
-          
           <form onSubmit={handleSubmit} className={styles.form}>
             {!isLogin && (
               <div className={styles.inputGroup}>
@@ -205,7 +166,7 @@ function Welcome() {
                   className={styles.passwordToggle}
                   aria-label={showPassword ? 'Сховати пароль' : 'Показати пароль'}
                 >
-                  <EyeIcon open={showPassword} />
+                  <EyeIcon open={showPassword} className={styles.eyeIcon} />
                 </button>
               </div>
             </div>
@@ -232,9 +193,16 @@ function Welcome() {
                     className={styles.passwordToggle}
                     aria-label={showConfirmPassword ? 'Сховати підтвердження пароля' : 'Показати підтвердження пароля'}
                   >
-                    <EyeIcon open={showConfirmPassword} />
+                    <EyeIcon open={showConfirmPassword} className={styles.eyeIcon} />
                   </button>
                 </div>
+              </div>
+            )}
+
+            {displayError && (
+              <div className={styles.errorMessageInline}>
+                <span aria-hidden="true">!</span>
+                <span>{displayError}</span>
               </div>
             )}
 

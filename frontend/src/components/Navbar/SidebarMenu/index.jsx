@@ -11,7 +11,7 @@ export default function SidebarMenu({ isOpen, onClose }) {
       <nav className={styles.nav}>
         {/* ГРУПА 1: Основне меню */}
         <div className={styles.group_top}>
-          <MenuItem icon="📅" label="Календар" link="/" onClick={onClose}/>
+          <MenuItem icon="📅" label="Календар" link="/calendar" onClick={onClose}/>
           <MenuItem icon="📓" label="Журнал" link="/journal" onClick={onClose}/>
           <MenuItem icon="👥" label="Студенти" link="/students" onClick={onClose}/>
         </div>
